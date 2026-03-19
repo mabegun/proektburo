@@ -45,6 +45,10 @@ function renderNotifications(notifications) {
     return;
   }
   
+  // Обновляем счётчик непрочитанных
+  const unreadCount = notifications.filter(n => !n.read).length;
+  updateUnreadCount(unreadCount);
+  
   const html = notifications.map(notif => {
     const iconClass = getNotificationIconClass(notif.type);
     const icon = UI.getEntityEmoji(notif.type);
@@ -116,7 +120,10 @@ function formatNotificationTime(dateString) {
  * Инициализация фильтров
  */
 function initFilters() {
-  const filterButtons = document.querySelectorAll('.card-static .btn-primary, .card-static .btn-secondary');
+  const filtersContainer = document.getElementById('notifications-filters');
+  if (!filtersContainer) return;
+  
+  const filterButtons = filtersContainer.querySelectorAll('button[data-type]');
   
   filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -175,6 +182,17 @@ async function markAllAsRead() {
     loadNotifications();
   } catch (error) {
     UI.toast('Ошибка при обновлении', 'error');
+  }
+}
+
+/**
+ * Обновление счётчика непрочитанных
+ */
+function updateUnreadCount(count) {
+  const counter = document.getElementById('unread-count');
+  if (counter) {
+    counter.textContent = count;
+    counter.style.display = count > 0 ? 'inline-block' : 'none';
   }
 }
 

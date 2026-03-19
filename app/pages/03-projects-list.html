@@ -263,11 +263,11 @@
   <!-- Сайдбар -->
   <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
     <div class="p-5">
-      <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
-        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
+      <div id="user-profile" class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">...</div>
         <div class="flex-1 min-w-0">
-          <p class="font-semibold text-slate-800 truncate">Иванов П.С.</p>
-          <p class="text-xs text-slate-500">Директор</p>
+          <p class="font-semibold text-slate-800 truncate"><span id="user-name">Загрузка...</span></p>
+          <p class="text-xs text-slate-500"><span id="user-role">Загрузка...</span></p>
         </div>
       </div>
     </div>
@@ -357,7 +357,13 @@
     </div>
 
     <!-- Список проектов -->
-    <div class="space-y-4">
+    <div id="projects-container" class="space-y-4">
+      <!-- Проекты загружаются через API -->
+      <div class="text-center text-slate-400 py-8">Загрузка проектов...</div>
+    </div>
+
+    <!-- Пример карточки проекта (для справки, скрыт) -->
+    <div class="space-y-4 hidden" id="project-template">
       <!-- Проект 1 -->
       <div class="project-card">
         <div class="flex justify-between items-start">

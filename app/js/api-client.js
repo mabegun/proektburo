@@ -93,6 +93,12 @@ class ApiClient {
    */
   async post(endpoint, data) {
     this.cache.clear(); // Сброс кэша при изменении данных
+    
+    // Demo-режим
+    if (CONFIG.DEMO_MODE) {
+      return this.getMockData(endpoint, 'POST', data);
+    }
+    
     return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -139,12 +145,22 @@ class ApiClient {
   /**
    * Моковые данные для demo-режима
    */
-  getMockData(endpoint, method) {
+  getMockData(endpoint, method = 'GET', data = null) {
     console.log(`[Demo API] ${method} ${endpoint}`);
 
     // Имитация задержки сети
     return new Promise((resolve) => {
       setTimeout(() => {
+        // POST запросы
+        if (method === 'POST' && MOCK_DATA.handlePost) {
+          const postResult = MOCK_DATA.handlePost(endpoint, data);
+          if (postResult) {
+            resolve(postResult);
+            return;
+          }
+        }
+        
+        // GET запросы
         resolve(MOCK_DATA.getMockResponse(endpoint));
       }, 100);
     });

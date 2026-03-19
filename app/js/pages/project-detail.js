@@ -8,28 +8,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /**
- * Обновление профиля в сайдбаре
- */
-
-/**
  * Загрузка проекта
  */
 async function loadProject() {
   try {
     const projectId = getUrlParam('id');
     if (!projectId) {
-      UI.showError('#project-content', 'Не указан ID проекта');
+      UI.showError('#project-title', 'Не указан ID проекта');
       return;
     }
     
-    UI.showLoading('#project-content');
+    UI.showLoading('#project-title');
     
     const project = await API.projects.getById(projectId);
     renderProject(project);
     
   } catch (error) {
     console.error('Ошибка загрузки проекта:', error);
-    UI.showError('#project-content', 'Не удалось загрузить проект');
+    UI.showError('#project-title', 'Не удалось загрузить проект');
   }
 }
 
@@ -37,6 +33,9 @@ async function loadProject() {
  * Рендер проекта
  */
 function renderProject(project) {
+  // Заголовок, код, статус, адрес
+  renderProjectHeader(project);
+  
   // Основная информация
   renderProjectInfo(project);
   
@@ -51,6 +50,47 @@ function renderProject(project) {
   
   // Разделы
   renderProjectSections(project.sections || []);
+  
+  // Прогресс
+  renderProjectProgress(project);
+  
+  // Команда
+  renderProjectTeam(project.team || []);
+  
+  // Последние файлы
+  renderRecentFiles(project.recentFiles || []);
+}
+
+/**
+ * Рендер заголовка проекта
+ */
+function renderProjectHeader(project) {
+  // Название
+  const titleEl = document.getElementById('project-title');
+  if (titleEl) {
+    titleEl.textContent = project.name || '—';
+  }
+  
+  // Код
+  const codeEl = document.getElementById('project-code');
+  if (codeEl) {
+    codeEl.textContent = project.code || '—';
+  }
+  
+  // Статус
+  const statusEl = document.getElementById('project-status');
+  if (statusEl) {
+    const statusClass = UI.getProjectStatusClass(project.status);
+    const statusText = UI.getProjectStatusText(project.status);
+    statusEl.className = `badge ${statusClass}`;
+    statusEl.textContent = statusText;
+  }
+  
+  // Адрес
+  const addressEl = document.getElementById('project-address');
+  if (addressEl) {
+    addressEl.textContent = project.address || '—';
+  }
 }
 
 /**
@@ -60,40 +100,36 @@ function renderProjectInfo(project) {
   const container = document.getElementById('project-info');
   if (!container) return;
   
-  const statusClass = UI.getProjectStatusClass(project.status);
-  const statusText = UI.getProjectStatusText(project.status);
   const typeText = getProjectTypeText(project.type);
   
   container.innerHTML = `
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <p class="text-sm text-slate-500">Шифр проекта</p>
-        <p class="font-medium text-slate-800 font-mono">${project.code}</p>
-      </div>
-      <div>
-        <p class="text-sm text-slate-500">Тип проекта</p>
-        <p class="font-medium text-slate-800">${typeText}</p>
-      </div>
-      <div>
-        <p class="text-sm text-slate-500">Заказчик</p>
-        <p class="font-medium text-slate-800">${project.customer || '—'}</p>
-      </div>
-      <div>
-        <p class="text-sm text-slate-500">Дата начала</p>
-        <p class="font-medium text-slate-800">${UI.formatDate(project.startDate)}</p>
-      </div>
-      <div>
-        <p class="text-sm text-slate-500">Срок сдачи</p>
-        <p class="font-medium text-slate-800">${UI.formatDate(project.deadline)}</p>
-      </div>
-      <div>
-        <p class="text-sm text-slate-500">Площадь</p>
-        <p class="font-medium text-slate-800">${project.area ? project.area.toLocaleString() + ' м²' : '—'}</p>
-      </div>
-      <div>
-        <p class="text-sm text-slate-500">Этажность</p>
-        <p class="font-medium text-slate-800">${project.floors || '—'}</p>
-      </div>
+    <div>
+      <p class="text-sm text-slate-500">Шифр проекта</p>
+      <p class="font-medium text-slate-800 font-mono">${project.code || '—'}</p>
+    </div>
+    <div>
+      <p class="text-sm text-slate-500">Тип проекта</p>
+      <p class="font-medium text-slate-800">${typeText}</p>
+    </div>
+    <div>
+      <p class="text-sm text-slate-500">Заказчик</p>
+      <p class="font-medium text-slate-800">${project.customer || '—'}</p>
+    </div>
+    <div>
+      <p class="text-sm text-slate-500">Дата начала</p>
+      <p class="font-medium text-slate-800">${UI.formatDate(project.startDate)}</p>
+    </div>
+    <div>
+      <p class="text-sm text-slate-500">Срок сдачи</p>
+      <p class="font-medium text-slate-800">${UI.formatDate(project.deadline)}</p>
+    </div>
+    <div>
+      <p class="text-sm text-slate-500">Площадь</p>
+      <p class="font-medium text-slate-800">${project.area ? project.area.toLocaleString() + ' м²' : '—'}</p>
+    </div>
+    <div>
+      <p class="text-sm text-slate-500">Этажность</p>
+      <p class="font-medium text-slate-800">${project.floors ? project.floors + ' этажей' : '—'}</p>
     </div>
   `;
 }
@@ -106,9 +142,7 @@ function renderProjectDescription(project) {
   if (!container) return;
   
   container.innerHTML = `
-    <div class="mb-4">
-      <p class="text-sm text-slate-600 leading-relaxed">${project.description || 'Описание отсутствует'}</p>
-    </div>
+    <p class="text-sm text-slate-600 leading-relaxed">${project.description || 'Описание отсутствует'}</p>
   `;
 }
 
@@ -117,6 +151,12 @@ function renderProjectDescription(project) {
  */
 function renderProjectFiles(files) {
   const container = document.getElementById('project-files');
+  const countEl = document.getElementById('project-files-count');
+  
+  if (countEl) {
+    countEl.textContent = `Файлы (${files.length})`;
+  }
+  
   if (!container) return;
   
   if (files.length === 0) {
@@ -130,15 +170,19 @@ function renderProjectFiles(files) {
       <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 ${iconClass} rounded-lg flex items-center justify-center">
-            ${UI.getEntityIcon('file', 'w-5 h-5')}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
           </div>
           <div>
             <p class="text-sm font-medium text-slate-700">${file.name}</p>
-            <p class="text-xs text-slate-400">${file.uploadedBy} • ${UI.formatDate(file.uploadedAt)} • ${formatFileSize(file.size)}</p>
+            <p class="text-xs text-slate-400">${file.uploadedBy || '—'} • ${UI.formatDate(file.uploadedAt)} • ${formatFileSize(file.size)}</p>
           </div>
         </div>
-        <a href="${file.url}" download class="text-slate-400 hover:text-blue-600">
-          ${UI.getEntityIcon('file', 'w-5 h-5')}
+        <a href="${file.url || '#'}" download class="text-slate-400 hover:text-blue-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
         </a>
       </div>
     `;
@@ -174,14 +218,13 @@ function renderProjectSurveys(surveys) {
   const surveysHtml = surveys.map(survey => {
     const statusClass = UI.getSurveyStatusClass(survey.status);
     const statusText = UI.getSurveyStatusText(survey.status);
-    const progressColor = UI.getProgressColor(survey.progress || 0);
     
     return `
       <a href="14-survey-detail.html?id=${survey.id}" class="block p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all">
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg flex items-center justify-center ${getStatusBgClass(survey.status)}">
-              ${UI.getStatusIcon(survey.status, 'html')}
+              ${getStatusIconSvg(survey.status)}
             </div>
             <div>
               <p class="font-medium text-slate-800">${survey.name}</p>
@@ -241,6 +284,121 @@ function renderProjectSections(sections) {
   container.innerHTML = sectionsHtml;
 }
 
+/**
+ * Рендер прогресса
+ */
+function renderProjectProgress(project) {
+  const container = document.getElementById('project-progress');
+  if (!container) return;
+  
+  const progress = project.progress || 0;
+  const completed = project.completedCount || 0;
+  const inProgress = project.inProgressCount || 0;
+  
+  container.innerHTML = `
+    <div class="relative pt-1">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-medium text-slate-700">Выполнение</span>
+        <span class="text-sm font-medium text-slate-700">${progress}%</span>
+      </div>
+      <div class="progress-bar mb-4">
+        <div class="progress-bar-fill" style="width: ${progress}%"></div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 text-center">
+      <div class="p-3 rounded-lg bg-slate-50">
+        <p class="text-2xl font-bold text-slate-800">${completed}</p>
+        <p class="text-xs text-slate-500">Завершено</p>
+      </div>
+      <div class="p-3 rounded-lg bg-slate-50">
+        <p class="text-2xl font-bold text-slate-800">${inProgress}</p>
+        <p class="text-xs text-slate-500">В работе</p>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Рендер команды
+ */
+function renderProjectTeam(team) {
+  const container = document.getElementById('project-team');
+  if (!container) return;
+  
+  if (team.length === 0) {
+    container.innerHTML = '<p class="text-sm text-slate-400">Команда не назначена</p>';
+    return;
+  }
+  
+  const teamHtml = team.map(member => {
+    const avatarColors = ['from-slate-700 to-slate-500', 'from-blue-500 to-blue-400', 'from-green-500 to-green-400', 'from-purple-500 to-purple-400', 'from-amber-500 to-amber-400'];
+    const colorIndex = Math.abs(member.name.charCodeAt(0)) % avatarColors.length;
+    const avatarColor = avatarColors[colorIndex];
+    const initial = member.name ? member.name.charAt(0).toUpperCase() : '?';
+    
+    return `
+      <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 group">
+        <div class="flex items-center gap-3">
+          <div class="avatar bg-gradient-to-br ${avatarColor} text-white">${initial}</div>
+          <div>
+            <p class="font-medium text-slate-800">${member.name}</p>
+            <p class="text-xs text-slate-500">${member.role || 'Участник'}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-all" title="Редактировать роль">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </button>
+          ${member.canRemove !== false ? `
+            <button class="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all" title="Удалить из команды">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  container.innerHTML = teamHtml;
+}
+
+/**
+ * Рендер последних файлов
+ */
+function renderRecentFiles(files) {
+  const container = document.getElementById('project-recent-files');
+  if (!container) return;
+  
+  if (files.length === 0) {
+    container.innerHTML = '<p class="text-sm text-slate-400">Нет файлов</p>';
+    return;
+  }
+  
+  const filesHtml = files.map(file => {
+    const iconClass = getFileIconClass(file.type);
+    return `
+      <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+        <div class="w-8 h-8 rounded ${iconClass} flex items-center justify-center">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-slate-800 truncate">${file.name}</p>
+          <p class="text-xs text-slate-400">${formatFileSize(file.size)} • ${UI.formatDate(file.date)}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  container.innerHTML = filesHtml;
+}
+
+/**
+ * Вспомогательные функции
+ */
 function getStatusBgClass(status) {
   const map = {
     'done': 'bg-green-100',
@@ -253,13 +411,25 @@ function getStatusBgClass(status) {
   return map[status] || 'bg-slate-100';
 }
 
+function getStatusIconSvg(status) {
+  const map = {
+    'done': '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>',
+    'completed': '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>',
+    'in-progress': '<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+    'review': '<svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+    'not-started': '<svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+    'overdue': '<svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+  };
+  return map[status] || map['not-started'];
+}
+
 function getProjectTypeText(type) {
   const map = {
     'new-construction': 'Новое строительство',
     'reconstruction': 'Реконструкция',
     'renovation': 'Капитальный ремонт',
   };
-  return map[type] || type;
+  return map[type] || type || '—';
 }
 
 function formatFileSize(bytes) {

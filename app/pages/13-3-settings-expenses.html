@@ -151,7 +151,7 @@
     </div>
 
     <!-- Список категорий -->
-    <div class="card-static overflow-hidden">
+    <div id="expenses-container" class="card-static overflow-hidden">
       <!-- Заголовок таблицы -->
       <div class="grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50 border-b border-slate-200 text-sm font-medium text-slate-500">
         <div class="col-span-1">Иконка</div>
@@ -161,7 +161,7 @@
       </div>
 
       <!-- Строки категорий -->
-      <div class="divide-y divide-slate-100">
+      <div id="expenses-table-body" class="divide-y divide-slate-100">
         <!-- Командировки -->
         <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50 transition-colors">
           <div class="col-span-1">
@@ -397,6 +397,8 @@
   </div>
 
   
+  <!-- API Scripts -->
+  <script src="../js/api-config.js"></script>
   <script src="../js/api-client.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/ui-helpers.js"></script>

@@ -82,7 +82,7 @@
       <a href="11-notifications.html" class="sidebar-item active">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
         Уведомления
-        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">3</span>
+        <span id="unread-count" class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">0</span>
       </a>
 
       <a href="12-reports.html" class="sidebar-item">
@@ -110,126 +110,23 @@
         <h1 class="text-2xl font-bold text-slate-800">Уведомления</h1>
         <p class="text-slate-500 mt-1">Все уведомления системы</p>
       </div>
-      <button class="btn-secondary text-sm">Отметить все как прочитанные</button>
+      <button class="btn-secondary text-sm" onclick="markAllAsRead()">Отметить все как прочитанные</button>
     </div>
 
     <!-- Фильтры -->
-    <div class="card-static p-4 mb-6">
+    <div id="notifications-filters" class="card-static p-4 mb-6">
       <div class="flex gap-3">
-        <button class="btn-primary py-2 px-4 text-sm">Все</button>
-        <button class="btn-secondary py-2 px-4 text-sm">Непрочитанные</button>
-        <button class="btn-secondary py-2 px-4 text-sm">Задачи</button>
-        <button class="btn-secondary py-2 px-4 text-sm">Проекты</button>
-        <button class="btn-secondary py-2 px-4 text-sm">Комментарии</button>
+        <button class="btn-primary py-2 px-4 text-sm" data-type="all">Все</button>
+        <button class="btn-secondary py-2 px-4 text-sm" data-type="unread">Непрочитанные</button>
+        <button class="btn-secondary py-2 px-4 text-sm" data-type="task">Задачи</button>
+        <button class="btn-secondary py-2 px-4 text-sm" data-type="project">Проекты</button>
+        <button class="btn-secondary py-2 px-4 text-sm" data-type="comment">Комментарии</button>
       </div>
     </div>
 
     <!-- Список уведомлений -->
-    <div class="space-y-3">
-      <!-- Непрочитанное уведомление -->
-      <div class="card p-4 notification-unread">
-        <div class="flex gap-4">
-          <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-between items-start mb-1">
-              <p class="font-medium text-slate-800">Файл требует правок</p>
-              <span class="text-xs text-slate-400">10 мин назад</span>
-            </div>
-            <p class="text-sm text-slate-600 mb-2">Петров А.И. загрузил файл "АР_План_этажей.pdf" в раздел АР проекта ЖК "Северное сияние". Файл требует согласования.</p>
-            <div class="flex gap-2">
-              <a href="06-section-detail.html" class="text-sm text-blue-600 hover:underline">Перейти к разделу</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Непрочитанное уведомление -->
-      <div class="card p-4 notification-unread">
-        <div class="flex gap-4">
-          <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-between items-start mb-1">
-              <p class="font-medium text-slate-800">Новое сообщение в разделе АР</p>
-              <span class="text-xs text-slate-400">1 час назад</span>
-            </div>
-            <p class="text-sm text-slate-600 mb-2">Сидоров К.М. оставил комментарий: "Чертежи проверил, замечаний нет."</p>
-            <div class="flex gap-2">
-              <a href="06-section-detail.html" class="text-sm text-blue-600 hover:underline">Перейти к обсуждению</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Непрочитанное уведомление -->
-      <div class="card p-4 notification-unread">
-        <div class="flex gap-4">
-          <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-between items-start mb-1">
-              <p class="font-medium text-slate-800">Вам назначена новая задача</p>
-              <span class="text-xs text-slate-400">2 часа назад</span>
-            </div>
-            <p class="text-sm text-slate-600 mb-2">Иванов П.С. назначил вам задачу "Согласовать отступы с заказчиком" в проекте "Реконструкция административного здания".</p>
-            <div class="flex gap-2">
-              <a href="07-tasks-list.html" class="text-sm text-blue-600 hover:underline">Перейти к задаче</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Прочитанное уведомление -->
-      <div class="card p-4 notification-read">
-        <div class="flex gap-4">
-          <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-between items-start mb-1">
-              <p class="font-medium text-slate-700">Раздел утверждён</p>
-              <span class="text-xs text-slate-400">Вчера</span>
-            </div>
-            <p class="text-sm text-slate-500">Раздел АР проекта ЖК "Северное сияние" был утверждён Ивановым П.С.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Прочитанное уведомление -->
-      <div class="card p-4 notification-read">
-        <div class="flex gap-4">
-          <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-between items-start mb-1">
-              <p class="font-medium text-slate-700">Новый исполнитель добавлен</p>
-              <span class="text-xs text-slate-400">2 дня назад</span>
-            </div>
-            <p class="text-sm text-slate-500">В систему добавлен новый исполнитель: Новикова Елена Александровна (Инженер ОВ).</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Прочитанное уведомление -->
-      <div class="card p-4 notification-read">
-        <div class="flex gap-4">
-          <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-between items-start mb-1">
-              <p class="font-medium text-slate-700">Файл загружен</p>
-              <span class="text-xs text-slate-400">3 дня назад</span>
-            </div>
-            <p class="text-sm text-slate-500">Петров А.И. загрузил файл "АР_Фасады.pdf" в раздел АР.</p>
-          </div>
-        </div>
-      </div>
+    <div id="notifications-container" class="space-y-3">
+      <!-- Уведомления загружаются через API -->
     </div>
   </main>
 

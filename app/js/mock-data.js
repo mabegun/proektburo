@@ -123,12 +123,12 @@ const MOCK_DATA = {
 
   // Сотрудники
   employees: [
-    { id: 1, name: 'Иванов Петр Сергеевич', email: 'ivanov@company.ru', role: 'director', department: 'Руководство', phone: '+7 (495) 123-45-67', active: true },
-    { id: 2, name: 'Петров Алексей Иванович', email: 'petrov@company.ru', role: 'gip', department: 'Проектирование', phone: '+7 (495) 123-45-68', active: true },
-    { id: 3, name: 'Сидоров Константин Михайлович', email: 'sidorov@company.ru', role: 'engineer', department: 'Проектирование', phone: '+7 (495) 123-45-69', active: true },
-    { id: 4, name: 'Козлов Дмитрий Владимирович', email: 'kozlov@company.ru', role: 'engineer', department: 'Конструкторы', phone: '+7 (495) 123-45-70', active: true },
-    { id: 5, name: 'Васильев Павел Петрович', email: 'vasiliev@company.ru', role: 'engineer', department: 'Инженеры ОВ', phone: '+7 (495) 123-45-71', active: true },
-    { id: 6, name: 'Новикова Анна Сергеевна', email: 'novikova@company.ru', role: 'accountant', department: 'Бухгалтерия', phone: '+7 (495) 123-45-72', active: true },
+    { id: 1, name: 'Иванов Петр Сергеевич', email: 'ivanov@company.ru', role: 'director', position: 'Директор', department: 'Руководство', phone: '+7 (495) 123-45-67', active: true, contractorType: 'employee', projectsCount: 3, payments: { paid: 850000, total: 1000000, progress: 85 } },
+    { id: 2, name: 'Петров Алексей Иванович', email: 'petrov@company.ru', role: 'gip', position: 'ГИП', department: 'Проектирование', phone: '+7 (495) 123-45-68', active: true, contractorType: 'employee', projectsCount: 3, payments: { paid: 520000, total: 680000, progress: 76 } },
+    { id: 3, name: 'Сидоров Константин Михайлович', email: 'sidorov@company.ru', role: 'engineer', position: 'Инженер', department: 'Проектирование', phone: '+7 (495) 123-45-69', active: true, contractorType: 'employee', projectsCount: 2, payments: { paid: 340000, total: 450000, progress: 75 } },
+    { id: 4, name: 'Козлов Дмитрий Владимирович', email: 'kozlov@company.ru', role: 'engineer', position: 'Конструктор', department: 'Конструкторы', phone: '+7 (495) 123-45-70', active: true, contractorType: 'employee', projectsCount: 2, payments: { paid: 280000, total: 380000, progress: 74 } },
+    { id: 5, name: 'Васильев Павел Петрович', email: 'vasiliev@company.ru', role: 'engineer', position: 'Инженер ОВ', department: 'Инженеры ОВ', phone: '+7 (495) 123-45-71', active: true, contractorType: 'self-employed', projectsCount: 1, payments: { paid: 120000, total: 180000, progress: 67 } },
+    { id: 6, name: 'Новикова Анна Сергеевна', email: 'novikova@company.ru', role: 'accountant', position: 'Бухгалтер', department: 'Бухгалтерия', phone: '+7 (495) 123-45-72', active: true, contractorType: 'employee', projectsCount: 0, payments: { paid: 450000, total: 450000, progress: 100 } },
   ],
 
   // Уведомления
@@ -160,22 +160,37 @@ const MOCK_DATA = {
   // Справочники
   dictionaries: {
     sectionTypes: [
-      { code: 'АР', name: 'Архитектурные решения', color: '#3b82f6' },
-      { code: 'ГП', name: 'Генеральный план', color: '#10b981' },
-      { code: 'КР', name: 'Конструктивные решения', color: '#f59e0b' },
-      { code: 'ОВ', name: 'Отопление и вентиляция', color: '#8b5cf6' },
-      { code: 'ВК', name: 'Водоснабжение и канализация', color: '#06b6d4' },
-      { code: 'ЭОМ', name: 'Электроснабжение', color: '#eab308' },
-      { code: 'ГС', name: 'Газоснабжение', color: '#f97316' },
-      { code: 'ТХ', name: 'Технологические решения', color: '#ec4899' },
-      { code: 'ПОС', name: 'Проект организации строительства', color: '#14b8a6' },
-      { code: 'ПОД', name: 'Проект организации демонтажа', color: '#6366f1' },
+      { id: 1, code: 'АР', name: 'Архитектурные решения', color: '#3b82f6', active: true },
+      { id: 2, code: 'ГП', name: 'Генеральный план', color: '#10b981', active: true },
+      { id: 3, code: 'КР', name: 'Конструктивные решения', color: '#f59e0b', active: true },
+      { id: 4, code: 'ОВ', name: 'Отопление и вентиляция', color: '#8b5cf6', active: true },
+      { id: 5, code: 'ВК', name: 'Водоснабжение и канализация', color: '#06b6d4', active: true },
+      { id: 6, code: 'ЭОМ', name: 'Электроснабжение', color: '#eab308', active: true },
+      { id: 7, code: 'ГС', name: 'Газоснабжение', color: '#f97316', active: true },
+      { id: 8, code: 'ТХ', name: 'Технологические решения', color: '#ec4899', active: false },
+      { id: 9, code: 'ПОС', name: 'Проект организации строительства', color: '#14b8a6', active: true },
+      { id: 10, code: 'ПОД', name: 'Проект организации демонтажа', color: '#6366f1', active: true },
     ],
     surveyTypes: [
-      { code: 'ИГД', name: 'Инженерно-геодезические изыскания' },
-      { code: 'ИГИ', name: 'Инженерно-геологические изыскания' },
-      { code: 'ИЭИ', name: 'Инженерно-экологические изыскания' },
-      { code: 'ИМИ', name: 'Инженерно-метеорологические изыскания' },
+      { id: 1, code: 'ИГД', name: 'Инженерно-геодезические изыскания', color: '#22c55e', active: true },
+      { id: 2, code: 'ИГИ', name: 'Инженерно-геологические изыскания', color: '#8b5cf6', active: true },
+      { id: 3, code: 'ИЭИ', name: 'Инженерно-экологические изыскания', color: '#06b6d4', active: true },
+      { id: 4, code: 'ИАДИ', name: 'Инженерно-археологические изыскания', color: '#f59e0b', active: true },
+    ],
+    expenseCategories: [
+      { id: 1, code: 'travel', name: 'Командировки', description: 'Расходы на командировки исполнителей', active: true },
+      { id: 2, code: 'materials', name: 'Материалы', description: 'Расходные материалы и канцелярия', active: true },
+      { id: 3, code: 'contractors', name: 'Подрядчики', description: 'Оплата услуг сторонних организаций', active: true },
+      { id: 4, code: 'transport', name: 'Транспорт', description: 'Транспортные расходы и ГСМ', active: true },
+      { id: 5, code: 'communication', name: 'Связь', description: 'Интернет, телефония, почтовые услуги', active: true },
+      { id: 6, code: 'other', name: 'Прочее', description: 'Другие расходы, не вошедшие в категории', active: true },
+    ],
+    contractorTypes: [
+      { id: 1, code: 'ooo', name: 'ООО — Организация', shortName: 'ООО', description: 'Юридическое лицо — организация. Полный комплект документов для бухгалтерии.', requiredDocuments: ['contract', 'act', 'invoice', 'upd', 'payment_order'], optionalDocuments: [], active: true },
+      { id: 2, code: 'ip', name: 'ИП — Индивидуальный предприниматель', shortName: 'ИП', description: 'Индивидуальный предприниматель. Упрощённый комплект документов по сравнению с ООО.', requiredDocuments: ['contract', 'act', 'invoice', 'payment_order'], optionalDocuments: ['invoice_vat'], active: true },
+      { id: 3, code: 'self_employed', name: 'Самозанятый — Налогоплательщик НПД', shortName: 'СЗ', description: 'Физическое лицо, применяющее специальный налоговый режим НПД.', requiredDocuments: ['my_tax_check'], optionalDocuments: ['contract', 'act'], active: true },
+      { id: 4, code: 'individual', name: 'Физлицо — Договор ГПХ', shortName: 'ГПХ', description: 'Физическое лицо по договору гражданско-правового характера.', requiredDocuments: ['contract', 'act'], optionalDocuments: [], active: true },
+      { id: 5, code: 'employee', name: 'Сотрудник — Штатный работник', shortName: 'ШТ', description: 'Штатный сотрудник организации. Выплата через зарплату/аванс.', requiredDocuments: [], optionalDocuments: [], active: true },
     ],
     projectStatuses: [
       { value: 'not-started', label: 'Не начат' },
@@ -208,6 +223,13 @@ MOCK_DATA.getMockResponse = function(endpoint) {
     const id = parseInt(endpoint.split('/')[2]);
     return this.projects.find(p => p.id === id) || null;
   }
+  
+  // Project team
+  if (endpoint.match(/^\/projects\/\d+\/team$/)) {
+    const id = parseInt(endpoint.split('/')[2]);
+    const project = this.projects.find(p => p.id === id);
+    return project?.team || [];
+  }
 
   // Tasks
   if (endpoint === '/tasks') return { items: this.tasks, total: this.tasks.length };
@@ -218,6 +240,18 @@ MOCK_DATA.getMockResponse = function(endpoint) {
     const id = parseInt(endpoint.split('/')[2]);
     return this.employees.find(e => e.id === id) || null;
   }
+  if (endpoint === '/employees/payments/summary') {
+    return {
+      paid: 2560000,
+      inProgress: 730000,
+      awaitingDocs: 280000,
+      overdue: 0,
+      employeesCount: 6,
+      pendingCount: 4,
+      awaitingDocsCount: 2,
+      overdueCount: 0
+    };
+  }
 
   // Notifications
   if (endpoint === '/notifications') return { items: this.notifications, total: this.notifications.length };
@@ -226,6 +260,8 @@ MOCK_DATA.getMockResponse = function(endpoint) {
   // Dictionaries
   if (endpoint === '/dictionaries/section-types') return this.dictionaries.sectionTypes;
   if (endpoint === '/dictionaries/survey-types') return this.dictionaries.surveyTypes;
+  if (endpoint === '/dictionaries/expense-categories') return this.dictionaries.expenseCategories;
+  if (endpoint === '/dictionaries/contractor-types') return this.dictionaries.contractorTypes;
   if (endpoint === '/dictionaries/project-statuses') return this.dictionaries.projectStatuses;
   if (endpoint === '/dictionaries/task-priorities') return this.dictionaries.priorities;
 
@@ -235,4 +271,42 @@ MOCK_DATA.getMockResponse = function(endpoint) {
   // Default
   console.warn(`Mock data not found for: ${endpoint}`);
   return null;
+};
+
+/**
+ * Обработка POST запросов (для авторизации)
+ */
+MOCK_DATA.handlePost = function(endpoint, data) {
+  // Login
+  if (endpoint === '/auth/login') {
+    const { email, password } = data;
+    // Проверяем email (пароль любой от 4 символов)
+    const user = this.employees.find(e => e.email === email);
+    if (user) {
+      return {
+        success: true,
+        token: 'demo-token-' + user.id,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        }
+      };
+    }
+    // Если пользователь не найден, возвращаем директора по умолчанию
+    return {
+      success: true,
+      token: 'demo-token-1',
+      user: this.currentUser
+    };
+  }
+  
+  // Logout
+  if (endpoint === '/auth/logout') {
+    return { success: true };
+  }
+  
+  console.warn(`Mock POST not found for: ${endpoint}`);
+  return { success: false, message: 'Not implemented' };
 };

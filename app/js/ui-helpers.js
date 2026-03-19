@@ -6,6 +6,8 @@
  * - Форматирование (даты, деньги, текст)
  * - Индикаторы статусов
  * - Toast уведомления
+ * - DictionaryUI - компонент для справочников
+ * - ModalUI - компонент для модальных окон
  */
 
 const UI = {
@@ -394,5 +396,261 @@ const UI = {
       modal.classList.remove('active');
       document.body.style.overflow = '';
     }
+  },
+};
+
+// ==================== DICTIONARY UI ====================
+
+/**
+ * Компонент для отображения справочников
+ */
+const DictionaryUI = {
+  /**
+   * Рендер таблицы справочника
+   */
+  renderTable(containerId, items, columns, options = {}) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!items || items.length === 0) {
+      UI.showEmpty(`#${containerId}`, 'Нет записей');
+      return;
+    }
+
+    const { actions = [], addButton = null, onAction = null } = options;
+
+    let html = `
+      <!-- Заголовок таблицы -->
+      <div class="grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50 border-b border-slate-200 text-sm font-medium text-slate-500">
+        ${columns.map(col => `
+          <div class="${col.type === 'color' ? 'col-span-1' : col.field === 'name' ? 'col-span-5' : 'col-span-2'}">${col.label}</div>
+        `).join('')}
+        ${actions.length > 0 ? '<div class="col-span-2 text-right">Действия</div>' : ''}
+      </div>
+
+      <!-- Строки -->
+      <div class="divide-y divide-slate-100">
+    `;
+
+    items.forEach(item => {
+      html += `
+        <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50 transition-colors ${!item.active ? 'opacity-50' : ''}">
+          ${columns.map(col => this.renderCell(item, col)).join('')}
+          ${actions.length > 0 ? this.renderActions(item, actions, onAction) : ''}
+        </div>
+      `;
+    });
+
+    html += '</div>';
+
+    // Кнопка добавления
+    if (addButton) {
+      html += `
+        <div class="p-4 border-t border-slate-100">
+          <button onclick="${addButton.action}" class="btn-secondary w-full">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            ${addButton.label}
+          </button>
+        </div>
+      `;
+    }
+
+    container.innerHTML = html;
+  },
+
+  /**
+   * Рендер ячейки
+   */
+  renderCell(item, col) {
+    const value = item[col.field];
+
+    if (col.type === 'color') {
+      return `
+        <div class="col-span-1">
+          <div class="w-10 h-10 rounded-lg" style="background-color: ${value || '#94a3b8'};"></div>
+        </div>
+      `;
+    }
+
+    if (col.type === 'status') {
+      const isActive = item.active !== false;
+      return `
+        <div class="col-span-2">
+          <span class="${isActive ? 'status-active' : 'status-inactive'} px-3 py-1 rounded-full text-sm">
+            ${isActive ? 'Активен' : 'Неактивен'}
+          </span>
+        </div>
+      `;
+    }
+
+    if (col.render) {
+      return `<div class="col-span-2">${col.render(item)}</div>`;
+    }
+
+    const colSpan = col.field === 'name' ? 'col-span-5' : 'col-span-2';
+    return `<div class="${colSpan} ${col.field === 'code' ? 'font-semibold text-slate-800' : 'text-slate-600'}">${value || '—'}</div>`;
+  },
+
+  /**
+   * Рендер действий
+   */
+  renderActions(item, actions, onAction) {
+    const buttons = actions.map(action => {
+      const icons = {
+        edit: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />',
+        deactivate: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />',
+        activate: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />',
+      };
+
+      return `
+        <button class="btn-icon" onclick="${onAction}('${action}', '${item.id}')" title="${action === 'edit' ? 'Редактировать' : action === 'deactivate' ? 'Деактивировать' : 'Активировать'}">
+          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icons[action]}</svg>
+        </button>
+      `;
+    }).join('');
+
+    return `<div class="col-span-2 flex justify-end gap-2">${buttons}</div>`;
+  },
+};
+
+// ==================== MODAL UI ====================
+
+/**
+ * Компонент для работы с модальными окнами
+ */
+const ModalUI = {
+  /**
+   * Инициализация модального окна
+   */
+  initModal(options) {
+    const { modalId, openButtonSelector, closeSelectors, formId, validate, onSubmit } = options;
+
+    // Закрытие по кнопкам
+    if (closeSelectors) {
+      document.querySelectorAll(closeSelectors.join(', ')).forEach(btn => {
+        btn.addEventListener('click', () => this.close(modalId));
+      });
+    }
+
+    // Обработка формы
+    if (formId) {
+      const form = document.getElementById(formId);
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const data = this.getFormData(formId);
+
+          // Валидация
+          if (validate) {
+            const errors = validate(data);
+            if (errors.length > 0) {
+              UI.toast(errors[0], 'error');
+              return;
+            }
+          }
+
+          // Отправка
+          try {
+            await onSubmit(data);
+            this.close(modalId);
+            UI.toast('Сохранено', 'success');
+          } catch (error) {
+            UI.toast(error.message || 'Ошибка сохранения', 'error');
+          }
+        });
+      }
+    }
+  },
+
+  /**
+   * Открыть модальное окно
+   */
+  open(modalId, options = {}) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+
+      if (options.autoFocus) {
+        const input = modal.querySelector('input:not([type="hidden"])');
+        if (input) input.focus();
+      }
+    }
+  },
+
+  /**
+   * Закрыть модальное окно
+   */
+  close(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  },
+
+  /**
+   * Получить данные формы
+   */
+  getFormData(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return {};
+
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    return data;
+  },
+
+  /**
+   * Заполнить форму данными
+   */
+  fillForm(formId, data) {
+    const form = document.getElementById(formId);
+    if (!form || !data) return;
+
+    Object.keys(data).forEach(key => {
+      const input = form.querySelector(`[name="${key}"], #${key}`);
+      if (input) {
+        if (input.type === 'checkbox') {
+          input.checked = !!data[key];
+        } else {
+          input.value = data[key];
+        }
+      }
+    });
+  },
+
+  /**
+   * Рендер полей формы
+   */
+  renderFields(fields) {
+    return fields.map(field => {
+      if (field.type === 'select') {
+        return `
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">${field.label}</label>
+            <select name="${field.name}" class="input-field" ${field.required ? 'required' : ''}>
+              ${field.placeholder ? `<option value="">${field.placeholder}</option>` : ''}
+              ${(field.options || []).map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
+            </select>
+          </div>
+        `;
+      }
+
+      return `
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">${field.label}</label>
+          <input type="${field.type || 'text'}" name="${field.name}" class="input-field" 
+            placeholder="${field.placeholder || ''}" ${field.required ? 'required' : ''}>
+        </div>
+      `;
+    }).join('');
   },
 };

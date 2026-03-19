@@ -38,8 +38,14 @@ async function loadSection() {
  * Рендер раздела
  */
 function renderSection(section) {
+  // Заголовок и статус
+  renderSectionHeader(section);
+  
   // Основная информация
   renderSectionInfo(section);
+  
+  // Ответственный
+  renderSectionResponsible(section.responsible);
   
   // Договор
   renderSectionContract(section.contract);
@@ -61,6 +67,63 @@ function renderSection(section) {
   
   // Комплектность
   renderSectionCompleteness(section.completeness);
+}
+
+/**
+ * Рендер заголовка раздела
+ */
+function renderSectionHeader(section) {
+  const titleEl = document.getElementById('section-title');
+  const codeEl = document.getElementById('section-code');
+  const statusEl = document.getElementById('section-status');
+  
+  if (titleEl) {
+    titleEl.textContent = section.name || section.type || 'Раздел';
+  }
+  
+  if (codeEl) {
+    codeEl.textContent = section.code || '';
+  }
+  
+  if (statusEl) {
+    const statusClass = UI.getSectionStatusClass(section.status);
+    const statusText = UI.getSectionStatusText(section.status);
+    statusEl.className = `badge ${statusClass}`;
+    statusEl.textContent = statusText;
+  }
+}
+
+/**
+ * Рендер ответственного
+ */
+function renderSectionResponsible(responsible) {
+  const container = document.getElementById('section-responsible-container');
+  const headerEl = document.getElementById('section-responsible');
+  
+  if (headerEl) {
+    headerEl.textContent = `Ответственный: ${responsible?.name || 'Не назначен'}`;
+  }
+  
+  if (!container) return;
+  
+  if (!responsible) {
+    container.innerHTML = `
+      <p class="text-xs text-slate-400 uppercase tracking-wider mb-2">Ответственный</p>
+      <p class="text-sm text-slate-400">Не назначен</p>
+    `;
+    return;
+  }
+  
+  container.innerHTML = `
+    <p class="text-xs text-slate-400 uppercase tracking-wider mb-2">Ответственный</p>
+    <div class="flex items-center gap-3 p-2 rounded-lg bg-blue-50 border border-blue-100">
+      <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white">${UI.getInitials(responsible.name)}</div>
+      <div>
+        <p class="font-medium text-slate-800">${responsible.name}</p>
+        <p class="text-xs text-slate-500">${responsible.role || ''}</p>
+      </div>
+    </div>
+  `;
 }
 
 /**
@@ -200,12 +263,15 @@ function renderSectionFiles(files) {
  */
 function renderSectionPayments(payments) {
   const container = document.getElementById('section-payments');
-  if (!container) return;
+  const wrapper = document.getElementById('section-payments-container');
   
   if (payments.length === 0) {
-    container.innerHTML = '<p class="text-sm text-slate-400">Выплаты не назначены</p>';
+    if (wrapper) wrapper.style.display = 'none';
     return;
   }
+  
+  if (wrapper) wrapper.style.display = 'block';
+  if (!container) return;
   
   const total = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
   const paid = payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + (p.amount || 0), 0);
@@ -321,12 +387,15 @@ function renderSectionObservers(observers) {
  */
 function renderSectionComments(comments) {
   const container = document.getElementById('section-comments');
-  if (!container) return;
+  const wrapper = document.getElementById('section-comments-container');
   
   if (comments.length === 0) {
-    container.innerHTML = '<p class="text-sm text-slate-400">Комментариев пока нет</p>';
+    if (wrapper) wrapper.style.display = 'none';
     return;
   }
+  
+  if (wrapper) wrapper.style.display = 'block';
+  if (!container) return;
   
   container.innerHTML = comments.map(comment => `
     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
@@ -367,9 +436,15 @@ function renderSectionComments(comments) {
  */
 function renderSectionCompleteness(completeness) {
   const container = document.getElementById('section-completeness');
-  if (!container) return;
+  const wrapper = document.getElementById('section-completeness-container');
   
-  if (!completeness) return;
+  if (!completeness) {
+    if (wrapper) wrapper.style.display = 'none';
+    return;
+  }
+  
+  if (wrapper) wrapper.style.display = 'block';
+  if (!container) return;
   
   const progress = completeness.progress || 0;
   

@@ -27,7 +27,9 @@ async function loadTasks() {
     };
     
     const data = await API.tasks.getList(params);
-    renderTasks(data.items || data);
+    const tasks = data.items || data;
+    renderTasks(tasks);
+    updateTabCounters(tasks);
     
   } catch (error) {
     console.error('Ошибка загрузки задач:', error);
@@ -184,6 +186,30 @@ function getStatusText(status) {
     'review': 'На проверке',
   };
   return map[status] || status;
+}
+
+/**
+ * Обновление счётчиков вкладок
+ */
+function updateTabCounters(tasks) {
+  // Все задачи
+  const countAll = tasks.length;
+  const elAll = document.getElementById('count-all');
+  if (elAll) elAll.textContent = countAll;
+  
+  // Мои задачи (назначенные текущему пользователю)
+  const currentUserId = window.currentUser?.id;
+  const countMy = tasks.filter(t => 
+    t.assignees?.some(a => a.id === currentUserId) || 
+    t.assigneeId === currentUserId
+  ).length;
+  const elMy = document.getElementById('count-my');
+  if (elMy) elMy.textContent = countMy;
+  
+  // Наблюдаемые задачи
+  const countWatching = tasks.filter(t => t.isWatching || t.watching).length;
+  const elWatching = document.getElementById('count-watching');
+  if (elWatching) elWatching.textContent = countWatching;
 }
 
 /**

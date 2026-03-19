@@ -38,6 +38,9 @@ async function loadSurvey() {
  * Рендер изыскания
  */
 function renderSurvey(survey) {
+  // Заголовок и статус
+  renderSurveyHeader(survey);
+  
   // Основная информация
   renderSurveyInfo(survey);
   
@@ -55,6 +58,35 @@ function renderSurvey(survey) {
   
   // Обсуждение
   renderSurveyComments(survey.comments || []);
+  
+  // История изменений
+  renderSurveyHistory(survey.history || []);
+}
+
+/**
+ * Рендер заголовка изыскания
+ */
+function renderSurveyHeader(survey) {
+  // Название
+  const titleEl = document.getElementById('survey-title');
+  if (titleEl) {
+    titleEl.textContent = survey.name || survey.title || 'Изыскание';
+  }
+  
+  // Статус
+  const statusEl = document.getElementById('survey-status');
+  if (statusEl) {
+    const statusClass = UI.getSurveyStatusClass(survey.status);
+    const statusText = UI.getSurveyStatusText(survey.status);
+    statusEl.className = `badge ${statusClass}`;
+    statusEl.textContent = statusText;
+  }
+  
+  // Ответственный
+  const responsibleEl = document.getElementById('survey-responsible');
+  if (responsibleEl) {
+    responsibleEl.textContent = `Ответственный: ${survey.responsible?.name || 'Не назначен'}`;
+  }
 }
 
 /**
@@ -305,6 +337,26 @@ function renderSurveyComments(comments) {
           <p class="text-sm text-slate-700 mt-2">${comment.text}</p>
         </div>
       </div>
+    </div>
+  `).join('');
+}
+
+/**
+ * Рендер истории изменений
+ */
+function renderSurveyHistory(history) {
+  const container = document.getElementById('survey-history');
+  if (!container) return;
+  
+  if (!history || history.length === 0) {
+    container.innerHTML = '<p class="text-slate-400">Нет записей</p>';
+    return;
+  }
+  
+  container.innerHTML = history.map(item => `
+    <div class="flex gap-2">
+      <span class="text-slate-400">${UI.formatDate(item.date, { day: '2-digit', month: '2-digit' })}</span>
+      <span class="text-slate-600">${item.action}</span>
     </div>
   `).join('');
 }

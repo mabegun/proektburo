@@ -4,6 +4,72 @@
  * Подключается на всех страницах после api.js и ui-helpers.js
  */
 
+// ==================== TOKEN MANAGEMENT ====================
+
+/**
+ * Получить токен авторизации
+ */
+function getAuthToken() {
+  return localStorage.getItem('auth_token') || localStorage.getItem('token');
+}
+
+/**
+ * Сохранить токен авторизации
+ */
+function setAuthToken(token) {
+  localStorage.setItem('auth_token', token);
+  localStorage.setItem('token', token);
+}
+
+/**
+ * Удалить токен авторизации
+ */
+function removeAuthToken() {
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+}
+
+/**
+ * Проверка авторизации
+ */
+async function checkAuth(requireAuth = false) {
+  const token = getAuthToken();
+  
+  // Если авторизация обязательна, но токена нет - редирект на логин
+  if (requireAuth && !token) {
+    window.location.href = '01-login.html';
+    return null;
+  }
+  
+  // Если токен есть, пробуем получить профиль
+  if (token) {
+    try {
+      const user = await API.auth.getCurrentUser();
+      window.currentUser = user;
+      return user;
+    } catch (error) {
+      console.error('Ошибка получения профиля:', error);
+      // Если токен невалидный - очищаем
+      if (requireAuth) {
+        removeAuthToken();
+        window.location.href = '01-login.html';
+      }
+      return null;
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Получить параметр из URL
+ */
+function getUrlParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param) || '';
+}
+
 /**
  * Инициализация страницы
  */

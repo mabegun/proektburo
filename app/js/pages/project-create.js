@@ -76,7 +76,7 @@ function renderSurveyCheckboxes(surveys) {
  * Рендер селекта ГИП
  */
 function renderGipSelect(employees) {
-  const select = document.getElementById('gip-select');
+  const select = document.getElementById('project-gip');
   if (!select) return;
   
   select.innerHTML = `
@@ -91,7 +91,7 @@ function renderGipSelect(employees) {
  * Рендер селекта типа проекта
  */
 function renderProjectTypeSelect(types) {
-  const select = document.getElementById('project-type-select');
+  const select = document.getElementById('project-type');
   if (!select) return;
   
   select.innerHTML = `
@@ -106,7 +106,7 @@ function renderProjectTypeSelect(types) {
  * Рендер селекта статуса
  */
 function renderStatusSelect(statuses) {
-  const select = document.getElementById('status-select');
+  const select = document.getElementById('project-status');
   if (!select) return;
   
   select.innerHTML = statuses.map(status => `
@@ -118,7 +118,7 @@ function renderStatusSelect(statuses) {
  * Инициализация формы
  */
 function initForm() {
-  const form = document.getElementById('project-form');
+  const form = document.getElementById('project-create-form');
   const fileInput = document.getElementById('files-input');
   const filesList = document.getElementById('files-list');
   const selectedFiles = [];
