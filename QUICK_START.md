@@ -2,16 +2,16 @@
 
 ## Два режима работы
 
-### 1. Статический прототип (без сервера)
+### 1. Demo-режим (без сервера)
 
 Откройте любой HTML файл в браузере:
 ```
-18.02-pb/01-login.html
-18.02-pb/02-dashboard.html
+18.02-pb/app/pages/01-login.html
+18.02-pb/app/pages/02-dashboard.html
 ...
 ```
 
-Все данные захардкожены — для визуальной разработки.
+Все данные mock-овые — для быстрого просмотра интерфейса.
 
 ### 2. Рабочая версия (с API)
 
@@ -44,7 +44,9 @@ run.bat
 ```bash
 cd app
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate   # Linux/macOS
+# или: venv\Scripts\activate   # Windows
+
 pip install -r requirements.txt
 python init_test_data.py
 uvicorn backend.main:app --reload --port 8000
@@ -54,13 +56,15 @@ uvicorn backend.main:app --reload --port 8000
 
 ## Тестовые пользователи
 
-| Email | Роль |
-|-------|------|
-| director@bureau.ru | Директор |
-| gip-ivanov@bureau.ru | ГИП |
-| executor-petrov@bureau.ru | Исполнитель |
+| Email | Роль | Пароль |
+|-------|------|--------|
+| director@bureau.ru | Директор | Любой от 4 символов |
+| gip-ivanov@bureau.ru | ГИП | Любой от 4 символов |
+| executor-petrov@bureau.ru | Исполнитель | Любой от 4 символов |
+| executor-sidorov@bureau.ru | Исполнитель | Любой от 4 символов |
+| observer-kuznetsov@bureau.ru | Наблюдатель | Любой от 4 символов |
 
-> Пароль не требуется — авторизация по email
+> **Важно:** Авторизация по email, пароль может быть любым (от 4 символов)
 
 ---
 
@@ -72,11 +76,11 @@ uvicorn backend.main:app --reload --port 8000
 ├── Js/                    # JS прототипа
 │
 └── app/                   # Рабочая версия
-    ├── pages/             # HTML с API
-    ├── js/                # API скрипты
+    ├── pages/             # 42 HTML с API
+    ├── js/                # API скрипты + mock
     ├── backend/           # FastAPI
-    ├── run.sh
-    └── run.bat
+    ├── run.sh             # Запуск Linux/macOS
+    └── run.bat            # Запуск Windows
 ```
 
 ---
@@ -89,7 +93,8 @@ uvicorn backend.main:app --reload --port 8000
 | Backend (50+ endpoints) | ✅ |
 | База данных (13 таблиц) | ✅ |
 | Тестовые данные | ✅ |
-| API интеграция frontend | 🔄 |
+| API интеграция frontend | ✅ 100% (42/42) |
+| Mock данные | ✅ |
 
 ---
 
@@ -107,7 +112,7 @@ uvicorn backend.main:app --reload --port 8000
 ```
 Access blocked by CORS policy
 ```
-→ Сервер уже настроен с CORS. Проверьте BASE_URL в api-config.js.
+→ Сервер уже настроен с CORS. Проверьте `BASE_URL` в `api-config.js`.
 
 ### Порт занят
 ```
@@ -118,13 +123,22 @@ Address already in use
 ### База пуста
 ```bash
 cd app
+source venv/bin/activate
 python init_test_data.py
 ```
 
+### Файлы не открываются в браузере
+→ Убедитесь, что открываете файлы из `app/pages/`, а не из корня проекта.
+
 ---
 
-## Следующие шаги
+## GitHub
 
-1. ✅ Запустить сервер
-2. ✅ Проверить http://localhost:8000
-3. 🔄 Подключить остальные страницы к API
+**Репозиторий:** https://github.com/mabegun/proektburo
+
+Для push-а изменений:
+```bash
+git add -A
+git commit -m "ваше сообщение"
+git push origin main
+```

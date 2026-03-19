@@ -8,8 +8,8 @@ const MOCK_DATA = {
   // Текущий пользователь
   currentUser: {
     id: 1,
-    name: 'Иванов Петр Сергеевич',
-    email: 'ivanov@company.ru',
+    name: 'Директоров Директор Д.',
+    email: 'director@bureau.ru',
     role: 'director',
   },
 
@@ -121,14 +121,13 @@ const MOCK_DATA = {
     { id: 4, title: 'Загрузить результаты ИГИ', project: 'ЖК "Северное сияние"', priority: 'low', status: 'completed', deadline: '2025-03-10', assignee: 'Петров А.И.' },
   ],
 
-  // Сотрудники
+  // Сотрудники (синхронизировано с backend/test_data.py)
   employees: [
-    { id: 1, name: 'Иванов Петр Сергеевич', email: 'ivanov@company.ru', role: 'director', position: 'Директор', department: 'Руководство', phone: '+7 (495) 123-45-67', active: true, contractorType: 'employee', projectsCount: 3, payments: { paid: 850000, total: 1000000, progress: 85 } },
-    { id: 2, name: 'Петров Алексей Иванович', email: 'petrov@company.ru', role: 'gip', position: 'ГИП', department: 'Проектирование', phone: '+7 (495) 123-45-68', active: true, contractorType: 'employee', projectsCount: 3, payments: { paid: 520000, total: 680000, progress: 76 } },
-    { id: 3, name: 'Сидоров Константин Михайлович', email: 'sidorov@company.ru', role: 'engineer', position: 'Инженер', department: 'Проектирование', phone: '+7 (495) 123-45-69', active: true, contractorType: 'employee', projectsCount: 2, payments: { paid: 340000, total: 450000, progress: 75 } },
-    { id: 4, name: 'Козлов Дмитрий Владимирович', email: 'kozlov@company.ru', role: 'engineer', position: 'Конструктор', department: 'Конструкторы', phone: '+7 (495) 123-45-70', active: true, contractorType: 'employee', projectsCount: 2, payments: { paid: 280000, total: 380000, progress: 74 } },
-    { id: 5, name: 'Васильев Павел Петрович', email: 'vasiliev@company.ru', role: 'engineer', position: 'Инженер ОВ', department: 'Инженеры ОВ', phone: '+7 (495) 123-45-71', active: true, contractorType: 'self-employed', projectsCount: 1, payments: { paid: 120000, total: 180000, progress: 67 } },
-    { id: 6, name: 'Новикова Анна Сергеевна', email: 'novikova@company.ru', role: 'accountant', position: 'Бухгалтер', department: 'Бухгалтерия', phone: '+7 (495) 123-45-72', active: true, contractorType: 'employee', projectsCount: 0, payments: { paid: 450000, total: 450000, progress: 100 } },
+    { id: 1, name: 'Директоров Директор Д.', email: 'director@bureau.ru', role: 'director', position: 'Директор', department: 'Руководство', phone: '+7 (495) 111-11-11', active: true, contractorType: 'employee', projectsCount: 3, payments: { paid: 850000, total: 1000000, progress: 85 } },
+    { id: 2, name: 'Иванов Иван И.', email: 'gip-ivanov@bureau.ru', role: 'gip', position: 'ГИП', department: 'Проектирование', phone: '+7 (495) 222-22-22', active: true, contractorType: 'employee', projectsCount: 3, payments: { paid: 520000, total: 680000, progress: 76 } },
+    { id: 3, name: 'Петров Петр П.', email: 'executor-petrov@bureau.ru', role: 'executor', position: 'Архитектор', department: 'Проектирование', phone: '+7 (495) 333-33-33', active: true, contractorType: 'employee', projectsCount: 2, payments: { paid: 340000, total: 450000, progress: 75 } },
+    { id: 4, name: 'Сидоров Сидор С.', email: 'executor-sidorov@bureau.ru', role: 'executor', position: 'Конструктор', department: 'Конструкторы', phone: '+7 (495) 444-44-44', active: true, contractorType: 'employee', projectsCount: 2, payments: { paid: 280000, total: 380000, progress: 74 } },
+    { id: 5, name: 'Кузнецов Кузьма К.', email: 'observer-kuznetsov@bureau.ru', role: 'observer', position: 'Наблюдатель', department: 'Контроль', phone: '+7 (495) 555-55-55', active: true, contractorType: 'employee', projectsCount: 1, payments: { paid: 0, total: 0, progress: 0 } },
   ],
 
   // Уведомления
@@ -558,6 +557,7 @@ MOCK_DATA.handlePost = function(endpoint, data) {
       };
     }
     // Если пользователь не найден, возвращаем директора по умолчанию
+    console.log('Пользователь не найден:', email, '- используется директор по умолчанию');
     return {
       success: true,
       token: 'demo-token-1',
