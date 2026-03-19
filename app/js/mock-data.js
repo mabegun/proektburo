@@ -406,3 +406,29 @@ MOCK_DATA.handlePost = function(endpoint, data) {
   console.warn(`Mock POST not found for: ${endpoint}`);
   return { success: false, message: 'Not implemented' };
 };
+
+/**
+ * Обработка PUT запросов
+ */
+MOCK_DATA.handlePut = function(endpoint, data) {
+  // Mark notification as read
+  const readMatch = endpoint.match(/^\/notifications\/(\d+)\/read$/);
+  if (readMatch) {
+    const id = parseInt(readMatch[1]);
+    const notif = this.notifications.find(n => n.id === id);
+    if (notif) {
+      notif.read = true;
+      return { success: true };
+    }
+    return { success: false, message: 'Notification not found' };
+  }
+
+  // Mark all notifications as read
+  if (endpoint === '/notifications/read-all') {
+    this.notifications.forEach(n => n.read = true);
+    return { success: true };
+  }
+
+  console.warn(`Mock PUT not found for: ${endpoint}`);
+  return { success: false, message: 'Not implemented' };
+};

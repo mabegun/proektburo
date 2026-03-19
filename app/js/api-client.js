@@ -110,6 +110,12 @@ class ApiClient {
    */
   async put(endpoint, data) {
     this.cache.clear();
+
+    // Demo-режим
+    if (CONFIG.DEMO_MODE) {
+      return this.getMockData(endpoint, 'PUT', data);
+    }
+
     return this.request(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -159,7 +165,16 @@ class ApiClient {
             return;
           }
         }
-        
+
+        // PUT запросы
+        if (method === 'PUT' && MOCK_DATA.handlePut) {
+          const putResult = MOCK_DATA.handlePut(endpoint, data);
+          if (putResult) {
+            resolve(putResult);
+            return;
+          }
+        }
+
         // GET запросы
         resolve(MOCK_DATA.getMockResponse(endpoint));
       }, 100);
