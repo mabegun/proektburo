@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Раздел АР - Проектное бюро</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f8fafc; }
+
+    .card { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; transition: all 0.2s ease; }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .card-static { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+
+    .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+    .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); transform: translateY(-1px); }
+
+    .btn-secondary { background: white; color: #475569; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; text-decoration: none; }
+    .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .input-field { border-radius: 12px; border: 1px solid #e2e8f0; padding: 12px 16px; transition: all 0.2s ease; background: white; width: 100%; font-size: 14px; }
+    .input-field:focus { outline: none; border-color: #94a3b8; box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15); }
+
+    .sidebar-item { border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; font-size: 14px; color: #475569; text-decoration: none; }
+    .sidebar-item:hover { background: #f1f5f9; }
+    .sidebar-item.active { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; }
+
+    .badge { border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; display: inline-block; }
+    .status-not-started { background: #f1f5f9; color: #64748b; }
+    .status-in-progress { background: #dbeafe; color: #1d4ed8; }
+    .status-completed { background: #dcfce7; color: #16a34a; }
+    .status-revision { background: #fef3c7; color: #d97706; }
+
+    .avatar { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+    .avatar-lg { width: 56px; height: 56px; font-size: 18px; }
+
+    .message-bubble { background: #f8fafc; border-radius: 16px; padding: 12px 16px; border: 1px solid #e2e8f0; }
+    .message-bubble.own { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border: none; }
+
+    /* Вкладки */
+    .tab-item {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #64748b;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-item:hover { color: #334155; background: #f8fafc; }
+    .tab-item.active { color: #1e293b; border-bottom-color: #1e293b; }
+
+    /* Статусы замечаний */
+    .status-in-work { background: #fee2e2; color: #dc2626; }
+    .status-review { background: #fef3c7; color: #d97706; }
+    .status-closed { background: #dcfce7; color: #16a34a; }
+    .badge-small { padding: 2px 8px; font-size: 11px; }
+
+    /* Статусы файлов */
+    .file-status-approved { color: #16a34a; }
+    .file-status-pending { color: #d97706; }
+    .file-status-rejected { color: #dc2626; }
+
+    /* Компактные карточки участников */
+    .participant-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+    .participant-chip .avatar {
+      width: 24px;
+      height: 24px;
+      font-size: 10px;
+    }
+
+    /* Скрытие вкладок */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex">
+
+  <!-- Сайдбар -->
+  <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
+    <div class="p-5">
+      <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-slate-800 truncate">Иванов П.С.</p>
+          <p class="text-xs text-slate-500">Директор</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-2">
+      <div class="mb-2 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Меню</div>
+
+      <a href="02-dashboard.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Дашборд
+      </a>
+
+      <a href="03-projects-list.html" class="sidebar-item active">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        Проекты
+      </a>
+
+      <a href="07-tasks-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+        Задачи
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">2</span>
+      </a>
+
+      <a href="09-employees-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        Исполнители
+      </a>
+
+      <div class="mb-2 mt-4 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Система</div>
+
+      <a href="11-notifications.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        Уведомления
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">3</span>
+      </a>
+
+      <a href="12-reports.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        Отчёты
+      </a>
+
+      <a href="13-settings.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Настройки
+      </a>
+    </nav>
+
+    <div class="p-3 border-t border-slate-100">
+      <a href="01-login.html" class="sidebar-item text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        Выйти
+      </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 overflow-auto p-8">
+    <!-- Заголовок -->
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <div class="flex items-center gap-2 text-sm text-slate-500 mb-2">
+          <a href="03-projects-list.html" class="hover:text-slate-700">Проекты</a>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+          <a href="04-project-detail.html" class="hover:text-slate-700">ЖК "Северное сияние"</a>
+          <span class="text-slate-400 font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">2025-001</span>
+        </div>
+        <div class="flex items-center gap-3 mb-2">
+          <h1 class="text-2xl font-bold text-slate-800">АР - Архитектурные решения</h1>
+          <span class="badge status-completed">Завершён</span>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button class="btn-secondary">Редактировать</button>
+        <button class="btn-primary">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Скачать все
+        </button>
+      </div>
+    </div>
+
+    <!-- Ключевая информация на первом экране -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <!-- Статус -->
+      <div class="card-static p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm text-slate-500">Статус</p>
+            <p class="font-semibold text-green-600">Завершён</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Сроки -->
+      <div class="card-static p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm text-slate-500">Сроки</p>
+            <p class="font-semibold text-slate-800">15.01 – 16.02.2024</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ответственный -->
+      <div class="card-static p-4">
+        <div class="flex items-center gap-3">
+          <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white w-10 h-10">П</div>
+          <div>
+            <p class="text-sm text-slate-500">Ответственный</p>
+            <p class="font-semibold text-slate-800">Петров А.И.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Файлы -->
+      <div class="card-static p-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm text-slate-500">Файлов</p>
+            <p class="font-semibold text-slate-800">3 файла (14.4 МБ)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Участники (компактно) -->
+    <div class="card-static p-4 mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <span class="text-sm font-medium text-slate-600">Соисполнители:</span>
+          <div class="flex items-center gap-2">
+            <span class="participant-chip">
+              <span class="avatar bg-gradient-to-br from-green-500 to-green-400 text-white">С</span>
+              Сидоров К.М.
+            </span>
+            <span class="participant-chip">
+              <span class="avatar bg-gradient-to-br from-purple-500 to-purple-400 text-white">К</span>
+              Кузнецов Д.В.
+            </span>
+            <button class="text-sm text-slate-400 hover:text-slate-600 flex items-center gap-1 ml-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+              Добавить
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-sm font-medium text-slate-600">Наблюдатели:</span>
+          <div class="flex items-center gap-2">
+            <span class="participant-chip">
+              <span class="avatar bg-gradient-to-br from-amber-500 to-amber-400 text-white">В</span>
+              Васильев П.П.
+            </span>
+            <button class="text-sm text-slate-400 hover:text-slate-600 flex items-center gap-1 ml-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+              Добавить
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладки -->
+    <div class="border-b border-slate-200 mb-6">
+      <nav class="flex gap-1">
+        <button class="tab-item active" data-tab="overview">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+          Обзор
+        </button>
+        <button class="tab-item" data-tab="files">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          Файлы
+          <span class="ml-1.5 bg-slate-200 text-slate-600 text-xs px-1.5 py-0.5 rounded-full">3</span>
+        </button>
+        <button class="tab-item" data-tab="discussion">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+          Обсуждение
+          <span class="ml-1.5 bg-blue-100 text-blue-700 text-xs px-1.5 py-0.5 rounded-full">4</span>
+        </button>
+        <button class="tab-item" data-tab="expertise">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+          Замечания
+          <span class="ml-1.5 bg-red-100 text-red-700 text-xs px-1.5 py-0.5 rounded-full">2</span>
+        </button>
+        <button class="tab-item" data-tab="finances">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Финансы
+        </button>
+        <button class="tab-item" data-tab="history">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          История
+        </button>
+      </nav>
+    </div>
+
+    <!-- Контент вкладок -->
+
+    <!-- Вкладка Обзор -->
+    <div class="tab-content active" id="tab-overview">
+      <div class="grid grid-cols-3 gap-6">
+        <!-- Файлы раздела (кратко) -->
+        <div class="col-span-2 space-y-6">
+          <div class="card-static p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="font-semibold text-slate-800">Последние файлы</h2>
+              <button class="text-sm text-blue-600 hover:text-blue-700 font-medium" onclick="document.querySelector('[data-tab=files]').click()">
+                Все файлы →
+              </button>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>
+                  </div>
+                  <div>
+                    <p class="font-medium text-slate-800">АР_План_этажей.pdf</p>
+                    <p class="text-sm text-slate-500">2.4 МБ • Загружен 16.02.2024</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm file-status-approved flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    Согласован
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>
+                  </div>
+                  <div>
+                    <p class="font-medium text-slate-800">АР_Фасады.pdf</p>
+                    <p class="text-sm text-slate-500">3.8 МБ • Загружен 14.02.2024</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm file-status-approved flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    Согласован
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>
+                  </div>
+                  <div>
+                    <p class="font-medium text-slate-800">АР_Разрезы.dwg</p>
+                    <p class="text-sm text-slate-500">8.2 МБ • Загружен 12.02.2024</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm file-status-approved flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    Согласован
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Последние сообщения -->
+          <div class="card-static p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="font-semibold text-slate-800">Последние сообщения</h2>
+              <button class="text-sm text-blue-600 hover:text-blue-700 font-medium" onclick="document.querySelector('[data-tab=discussion]').click()">
+                Все сообщения →
+              </button>
+            </div>
+            
+            <div class="space-y-3">
+              <div class="flex gap-3">
+                <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white flex-shrink-0 w-8 h-8 text-xs">И</div>
+                <div class="flex-1">
+                  <div class="message-bubble own py-2 px-3">
+                    <p class="font-medium text-sm mb-0.5">Иванов П.С.</p>
+                    <p class="text-sm opacity-90">Отлично! Все замечания устранены. Утверждаю раздел АР.</p>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-1">16.02.2024 в 14:00</p>
+                </div>
+              </div>
+
+              <div class="flex gap-3">
+                <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white flex-shrink-0 w-8 h-8 text-xs">П</div>
+                <div class="flex-1">
+                  <div class="message-bubble py-2 px-3">
+                    <p class="font-medium text-sm text-slate-800 mb-0.5">Петров А.И.</p>
+                    <p class="text-sm text-slate-600">Правки внесены. Прошу повторную проверку.</p>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-1">16.02.2024 в 11:20</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-3 mt-4 pt-4 border-t border-slate-100">
+              <input type="text" class="input-field flex-1" placeholder="Написать сообщение...">
+              <button class="btn-primary">Отправить</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правая колонка -->
+        <div class="space-y-6">
+          <!-- Активные замечания -->
+          <div class="card-static p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="font-semibold text-slate-800">Активные замечания</h2>
+              <span class="text-sm text-red-600 font-medium">2</span>
+            </div>
+            <div class="space-y-3">
+              <div class="p-3 rounded-lg bg-red-50 border border-red-100">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="badge status-in-work">В работе</span>
+                  <span class="text-xs text-slate-400">Петров А.И.</span>
+                </div>
+                <p class="text-sm text-slate-700">Увеличить площадь холла на 3-м этаже</p>
+              </div>
+              <div class="p-3 rounded-lg bg-amber-50 border border-amber-100">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="badge status-review">На проверке</span>
+                  <span class="text-xs text-slate-400">Сидоров К.М.</span>
+                </div>
+                <p class="text-sm text-slate-700">Доработать узел кровли</p>
+              </div>
+            </div>
+            <button class="w-full mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium" onclick="document.querySelector('[data-tab=expertise]').click()">
+              Все замечания →
+            </button>
+          </div>
+
+          <!-- Договор -->
+          <div class="card-static p-6">
+            <h2 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Договор
+            </h2>
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-medium text-slate-800">№ 2025-03-15</span>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">ИП</span>
+              </div>
+              <p class="text-sm text-slate-600 mb-1">от 15.03.2025</p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-200">
+                <span class="text-sm text-slate-500">Сумма:</span>
+                <span class="font-semibold text-slate-800">100 000 ₽</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-green-600 mt-3">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Действующий</span>
+            </div>
+          </div>
+
+          <!-- Прогресс выплат (кратко) -->
+          <div class="card-static p-6">
+            <div class="flex justify-between items-center mb-3">
+              <h2 class="font-semibold text-slate-800">Выплаты</h2>
+              <button class="text-sm text-blue-600 hover:text-blue-700 font-medium" onclick="document.querySelector('[data-tab=finances]').click()">
+                Подробнее →
+              </button>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-slate-500">Выплачено:</span>
+              <span class="font-semibold text-slate-800">80 000 ₽</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full" style="width: 80%"></div>
+            </div>
+            <p class="text-xs text-slate-400 mt-2">Остаток: 20 000 ₽</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладка Файлы -->
+    <div class="tab-content" id="tab-files">
+      <div class="card-static p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-semibold text-slate-800">Файлы раздела</h2>
+          <button class="btn-secondary flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Загрузить файл
+          </button>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>
+              </div>
+              <div>
+                <p class="font-medium text-slate-800">АР_План_этажей.pdf</p>
+                <p class="text-sm text-slate-500">2.4 МБ • Загружен 16.02.2024 Петровым А.И.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="badge status-completed">Согласован</span>
+              <button class="btn-secondary py-2 px-3 text-sm">Скачать</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>
+              </div>
+              <div>
+                <p class="font-medium text-slate-800">АР_Фасады.pdf</p>
+                <p class="text-sm text-slate-500">3.8 МБ • Загружен 14.02.2024 Петровым А.И.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="badge status-completed">Согласован</span>
+              <button class="btn-secondary py-2 px-3 text-sm">Скачать</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>
+              </div>
+              <div>
+                <p class="font-medium text-slate-800">АР_Разрезы.dwg</p>
+                <p class="text-sm text-slate-500">8.2 МБ • Загружен 12.02.2024 Сидоровым К.М.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="badge status-completed">Согласован</span>
+              <button class="btn-secondary py-2 px-3 text-sm">Скачать</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладка Обсуждение -->
+    <div class="tab-content" id="tab-discussion">
+      <div class="card-static p-6">
+        <h2 class="font-semibold text-slate-800 mb-4">Обсуждение раздела</h2>
+        
+        <div class="space-y-4 mb-4">
+          <div class="flex gap-3">
+            <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white flex-shrink-0">П</div>
+            <div class="flex-1">
+              <div class="message-bubble">
+                <p class="font-medium text-slate-800 mb-1">Петров А.И.</p>
+                <p class="text-sm text-slate-600">Загрузил первые чертежи планов этажей. Прошу проверить.</p>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">15.02.2024 в 14:30</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white flex-shrink-0">И</div>
+            <div class="flex-1">
+              <div class="message-bubble own">
+                <p class="font-medium mb-1">Иванов П.С.</p>
+                <p class="text-sm opacity-90">Чертежи проверил. Есть замечания по планировке 3-го этажа - нужно увеличить площадь холла.</p>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">15.02.2024 в 16:45</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white flex-shrink-0">П</div>
+            <div class="flex-1">
+              <div class="message-bubble">
+                <p class="font-medium text-slate-800 mb-1">Петров А.И.</p>
+                <p class="text-sm text-slate-600">Правки внесены. Прошу повторную проверку.</p>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">16.02.2024 в 11:20</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white flex-shrink-0">И</div>
+            <div class="flex-1">
+              <div class="message-bubble own">
+                <p class="font-medium mb-1">Иванов П.С.</p>
+                <p class="text-sm opacity-90">Отлично! Все замечания устранены. Утверждаю раздел АР.</p>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">16.02.2024 в 14:00</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-4 border-t border-slate-100">
+          <input type="text" class="input-field flex-1" placeholder="Написать сообщение...">
+          <button class="btn-primary">Отправить</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладка Замечания -->
+    <div class="tab-content" id="tab-expertise">
+      <div class="card-static p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-semibold text-slate-800">Замечания по разделу</h2>
+          <button class="btn-secondary flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Добавить замечание
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl border border-red-100 bg-red-50">
+            <div class="flex items-center justify-between mb-3">
+              <span class="badge status-in-work">В работе</span>
+              <span class="text-xs text-slate-400">Создано 15.02.2024</span>
+            </div>
+            <p class="font-medium text-slate-800 mb-2">Увеличить площадь холла на 3-м этаже</p>
+            <p class="text-sm text-slate-600 mb-3">Текущая площадь 45 м² не соответствует нормативам. Необходимо увеличить до минимум 52 м².</p>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Исполнитель:</span>
+                <span class="font-medium text-slate-700">Петров А.И.</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Файл:</span>
+                <span class="text-blue-600 hover:underline cursor-pointer">АР_План_этажей.pdf</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl border border-amber-100 bg-amber-50">
+            <div class="flex items-center justify-between mb-3">
+              <span class="badge status-review">На проверке</span>
+              <span class="text-xs text-slate-400">Создано 14.02.2024</span>
+            </div>
+            <p class="font-medium text-slate-800 mb-2">Доработать узел кровли</p>
+            <p class="text-sm text-slate-600 mb-3">Узел примыкания кровли к парапету требует доработки в соответствии с новыми нормами.</p>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Исполнитель:</span>
+                <span class="font-medium text-slate-700">Сидоров К.М.</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Файл:</span>
+                <span class="text-blue-600 hover:underline cursor-pointer">АР_Фасады.pdf</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl border border-green-100 bg-green-50">
+            <div class="flex items-center justify-between mb-3">
+              <span class="badge status-closed">Закрыто</span>
+              <span class="text-xs text-slate-400">Закрыто 12.02.2024</span>
+            </div>
+            <p class="font-medium text-slate-800 mb-2">Проверить соответствие размеров</p>
+            <p class="text-sm text-slate-600 mb-3">Размеры на плане не соответствуют указанным в спецификации.</p>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Исполнитель:</span>
+                <span class="font-medium text-slate-700">Петров А.И.</span>
+              </div>
+              <span class="text-green-600 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                Устранено
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладка Финансы -->
+    <div class="tab-content" id="tab-finances">
+      <div class="grid grid-cols-3 gap-6">
+        <!-- Договор -->
+        <div class="col-span-2">
+          <div class="card-static p-6 mb-6">
+            <h2 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Договор
+            </h2>
+            
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-slate-500">Номер договора</p>
+                  <p class="font-medium text-slate-800">№ 2025-03-15</p>
+                </div>
+                <div>
+                  <p class="text-sm text-slate-500">Дата заключения</p>
+                  <p class="font-medium text-slate-800">15.03.2025</p>
+                </div>
+                <div>
+                  <p class="text-sm text-slate-500">Тип договора</p>
+                  <span class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">ИП</span>
+                </div>
+                <div>
+                  <p class="text-sm text-slate-500">Исполнитель</p>
+                  <p class="font-medium text-slate-800">Петров А.И.</p>
+                </div>
+                <div>
+                  <p class="text-sm text-slate-500">Сумма договора</p>
+                  <p class="font-semibold text-xl text-slate-800">100 000 ₽</p>
+                </div>
+                <div>
+                  <p class="text-sm text-slate-500">Статус</p>
+                  <span class="flex items-center gap-1 text-green-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Действующий
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Выплаты -->
+          <div class="card-static p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="font-semibold text-slate-800 flex items-center gap-2">
+                <span class="text-lg">💰</span>
+                Выплаты
+              </h2>
+              <button class="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Добавить выплату
+              </button>
+            </div>
+
+            <!-- Прогресс выплат -->
+            <div class="mb-6 p-4 bg-slate-50 rounded-xl">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-slate-600">Прогресс выплат:</span>
+                <span class="font-semibold text-slate-800">80 000 ₽ из 100 000 ₽</span>
+              </div>
+              <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full" style="width: 80%"></div>
+              </div>
+              <p class="text-sm text-slate-500 mt-2">Остаток к выплате: <span class="font-medium text-amber-600">20 000 ₽</span></p>
+            </div>
+
+            <!-- Список выплат -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50">
+                <div class="flex items-center gap-3">
+                  <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                  <div>
+                    <p class="font-medium text-slate-700">Аванс</p>
+                    <p class="text-xs text-slate-400">15.03.2025</p>
+                  </div>
+                </div>
+                <span class="font-semibold text-slate-700">30 000 ₽</span>
+              </div>
+
+              <div class="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50">
+                <div class="flex items-center gap-3">
+                  <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                  <div>
+                    <p class="font-medium text-slate-700">Основная часть</p>
+                    <p class="text-xs text-slate-400">18.03.2025</p>
+                  </div>
+                </div>
+                <span class="font-semibold text-slate-700">50 000 ₽</span>
+              </div>
+
+              <div class="flex items-center justify-between p-4 rounded-xl border border-amber-200 bg-amber-50">
+                <div class="flex items-center gap-3">
+                  <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                  <div>
+                    <p class="font-medium text-slate-700">Остаток</p>
+                    <p class="text-xs text-amber-600">Ожидается</p>
+                  </div>
+                </div>
+                <span class="font-semibold text-slate-700">20 000 ₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правая колонка -->
+        <div class="space-y-6">
+          <!-- Сводка -->
+          <div class="card-static p-6">
+            <h2 class="font-semibold text-slate-800 mb-4">Сводка</h2>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                <span class="text-sm text-slate-500">Сумма договора</span>
+                <span class="font-semibold text-slate-800">100 000 ₽</span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                <span class="text-sm text-slate-500">Выплачено</span>
+                <span class="font-semibold text-green-600">80 000 ₽</span>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                <span class="text-sm text-slate-500">Остаток</span>
+                <span class="font-semibold text-amber-600">20 000 ₽</span>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-slate-500">Прогресс</span>
+                <span class="font-semibold text-slate-800">80%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Файлы договора -->
+          <div class="card-static p-6">
+            <h2 class="font-semibold text-slate-800 mb-4">Документы</h2>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:bg-slate-50">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" /></svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-slate-700">Договор_АР.pdf</p>
+                    <p class="text-xs text-slate-400">1.5 МБ</p>
+                  </div>
+                </div>
+                <button class="text-sm text-blue-600 hover:text-blue-700">Скачать</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладка История -->
+    <div class="tab-content" id="tab-history">
+      <div class="card-static p-6">
+        <h2 class="font-semibold text-slate-800 mb-4">История изменений раздела</h2>
+        
+        <div class="relative">
+          <!-- Линия таймлайна -->
+          <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-200"></div>
+
+          <div class="space-y-4">
+            <div class="relative flex gap-4 pl-10">
+              <div class="absolute left-2 w-5 h-5 rounded-full bg-green-500 border-4 border-white shadow"></div>
+              <div class="flex-1 pb-4 border-b border-slate-100">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-medium text-slate-800">Раздел утверждён</span>
+                  <span class="text-sm text-slate-400">16.02.2024 в 14:00</span>
+                </div>
+                <p class="text-sm text-slate-600">Иванов П.С. утвердил раздел АР</p>
+              </div>
+            </div>
+
+            <div class="relative flex gap-4 pl-10">
+              <div class="absolute left-2 w-5 h-5 rounded-full bg-blue-500 border-4 border-white shadow"></div>
+              <div class="flex-1 pb-4 border-b border-slate-100">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-medium text-slate-800">Файл загружен</span>
+                  <span class="text-sm text-slate-400">16.02.2024 в 11:30</span>
+                </div>
+                <p class="text-sm text-slate-600">Петров А.И. загрузил АР_План_этажей.pdf</p>
+              </div>
+            </div>
+
+            <div class="relative flex gap-4 pl-10">
+              <div class="absolute left-2 w-5 h-5 rounded-full bg-amber-500 border-4 border-white shadow"></div>
+              <div class="flex-1 pb-4 border-b border-slate-100">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-medium text-slate-800">Комментарий добавлен</span>
+                  <span class="text-sm text-slate-400">15.02.2024 в 16:45</span>
+                </div>
+                <p class="text-sm text-slate-600">Иванов П.С. добавил комментарий: "Чертежи проверил. Есть замечания..."</p>
+              </div>
+            </div>
+
+            <div class="relative flex gap-4 pl-10">
+              <div class="absolute left-2 w-5 h-5 rounded-full bg-blue-500 border-4 border-white shadow"></div>
+              <div class="flex-1 pb-4 border-b border-slate-100">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-medium text-slate-800">Файл загружен</span>
+                  <span class="text-sm text-slate-400">14.02.2024 в 10:15</span>
+                </div>
+                <p class="text-sm text-slate-600">Петров А.И. загрузил АР_Фасады.pdf</p>
+              </div>
+            </div>
+
+            <div class="relative flex gap-4 pl-10">
+              <div class="absolute left-2 w-5 h-5 rounded-full bg-blue-500 border-4 border-white shadow"></div>
+              <div class="flex-1 pb-4 border-b border-slate-100">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-medium text-slate-800">Файл загружен</span>
+                  <span class="text-sm text-slate-400">12.02.2024 в 09:00</span>
+                </div>
+                <p class="text-sm text-slate-600">Сидоров К.М. загрузил АР_Разрезы.dwg</p>
+              </div>
+            </div>
+
+            <div class="relative flex gap-4 pl-10">
+              <div class="absolute left-2 w-5 h-5 rounded-full bg-purple-500 border-4 border-white shadow"></div>
+              <div class="flex-1 pb-4 border-b border-slate-100">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-medium text-slate-800">Участник добавлен</span>
+                  <span class="text-sm text-slate-400">20.01.2024 в 14:00</span>
+                </div>
+                <p class="text-sm text-slate-600">Сидоров К.М. добавлен как соисполнитель</p>
+              </div>
+            </div>
+
+            <div class="relative flex gap-4 pl-10">
+              <div class="absolute left-2 w-5 h-5 rounded-full bg-slate-400 border-4 border-white shadow"></div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-medium text-slate-800">Раздел создан</span>
+                  <span class="text-sm text-slate-400">15.01.2024 в 10:00</span>
+                </div>
+                <p class="text-sm text-slate-600">Иванов П.С. создал раздел АР</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Переключение вкладок
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Убираем активный класс со всех вкладок
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        // Добавляем активный класс текущей вкладке
+        tab.classList.add('active');
+        
+        // Скрываем все контенты
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        // Показываем нужный контент
+        const tabId = 'tab-' + tab.dataset.tab;
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
