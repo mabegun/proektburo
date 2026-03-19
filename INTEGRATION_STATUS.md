@@ -39,7 +39,13 @@
 | 09-employees-list.html | ✅ Готово |
 | 10-employee-create.html | ✅ Готово |
 | 11-notifications.html | ✅ Готово |
+| 12-reports.html | ✅ Готово |
 | 13-settings.html | ✅ Готово |
+| 20-calendar.html | ✅ Готово |
+| 04-1-project-discussion.html | ✅ Готово |
+| 04-2-project-expertise.html | ✅ Готово |
+| 04-3-project-history.html | ✅ Готово |
+| 04-5-project-finances.html | ✅ Готово |
 
 ---
 
@@ -116,7 +122,7 @@ DEMO_MODE: true
 ```
 Backend:            ████████████████████ 100%
 API скрипты:        ████████████████████ 100%
-HTML адаптировано:  ████████████░░░░░░░░  60% (12/20 основных)
+HTML адаптировано:  ████████████████░░░░  80% (18/22 основных)
 Mock данные:        ████████████████████ 100%
 ```
 
