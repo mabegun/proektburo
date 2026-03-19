@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Задачи - Проектное бюро</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f8fafc; }
+    
+    .badge { border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; display: inline-block; }
+    .status-pending { background: #f1f5f9; color: #64748b; }
+    .status-in-progress { background: #dbeafe; color: #1d4ed8; }
+    .status-completed { background: #dcfce7; color: #16a34a; }
+    .status-cancelled { background: #fee2e2; color: #dc2626; }
+    
+    .priority-critical { background: #fee2e2; color: #dc2626; }
+    .priority-high { background: #fef3c7; color: #d97706; }
+    .priority-medium { background: #dbeafe; color: #2563eb; }
+    .priority-low { background: #f1f5f9; color: #64748b; }
+    
+    .task-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 16px; transition: all 0.2s ease; }
+    .task-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #cbd5e1; }
+    
+    .input-field { border-radius: 12px; border: 1px solid #e2e8f0; padding: 12px 16px; transition: all 0.2s ease; background: white; width: 100%; font-size: 14px; }
+    .input-field:focus { outline: none; border-color: #94a3b8; box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15); }
+    
+    .sidebar-item { border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; font-size: 14px; color: #475569; text-decoration: none; }
+    .sidebar-item:hover { background: #f1f5f9; }
+    .sidebar-item.active { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; }
+    
+    .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+    .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); }
+    
+    .checkbox { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
+    .checkbox.checked { background: #22c55e; border-color: #22c55e; }
+    .checkbox.checked::after { content: '✓'; color: white; font-size: 12px; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex">
+
+  <!-- Сайдбар -->
+  <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
+    <div class="p-5">
+      <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-500 text-white flex items-center justify-center font-semibold text-sm"
+             data-value="name" data-format="initials">—</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-slate-800 truncate" data-value="name">—</p>
+          <p class="text-xs text-slate-500" data-value="role">—</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-2">
+      <a href="02-dashboard.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Дашборд
+      </a>
+      <a href="03-projects-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        Проекты
+      </a>
+      <a href="07-tasks-list.html" class="sidebar-item active">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+        Задачи
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full" data-value="myCount" data-default="0">—</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Основной контент -->
+  <main class="flex-1 overflow-auto p-8">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800">Задачи</h1>
+        <p class="text-slate-500 mt-1">Управление задачами и сроками</p>
+      </div>
+      <a href="08-task-create.html" class="btn-primary">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        Новая задача
+      </a>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
+      <div class="flex gap-4 items-center">
+        <div class="flex-1">
+          <input type="text" placeholder="Поиск по названию..." class="input-field" id="searchInput">
+        </div>
+        <select class="input-field w-40" id="statusFilter">
+          <option value="">Все статусы</option>
+          <option value="pending">Ожидает</option>
+          <option value="in_progress">В работе</option>
+          <option value="completed">Выполнено</option>
+        </select>
+        <select class="input-field w-40" id="priorityFilter">
+          <option value="">Все приоритеты</option>
+          <option value="critical">Критичный</option>
+          <option value="high">Высокий</option>
+          <option value="medium">Средний</option>
+          <option value="low">Низкий</option>
+        </select>
+        <select class="input-field w-48" id="projectFilter">
+          <option value="">Все проекты</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-xl p-4 border border-slate-200">
+        <p class="text-sm text-slate-500">Всего</p>
+        <p class="text-2xl font-bold text-slate-800" data-value="stats.total">—</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200">
+        <p class="text-sm text-slate-500">В работе</p>
+        <p class="text-2xl font-bold text-blue-600" data-value="stats.inProgress">—</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200">
+        <p class="text-sm text-slate-500">Просрочено</p>
+        <p class="text-2xl font-bold text-red-600" data-value="stats.overdue">—</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200">
+        <p class="text-sm text-slate-500">Выполнено</p>
+        <p class="text-2xl font-bold text-green-600" data-value="stats.completed">—</p>
+      </div>
+    </div>
+
+    <!-- Список задач -->
+    <div class="space-y-3" id="tasks-list">
+      <div class="task-card hidden" data-template="task-card">
+        <div class="flex items-start gap-4">
+          <div class="checkbox" data-action="toggle-status"></div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <a href="#" class="font-medium text-slate-800 hover:text-blue-600" data-value="title" data-link="08-task-create.html?id={id}">Название задачи</a>
+              <span class="badge" data-value="priority" data-enum="Priority">Приоритет</span>
+            </div>
+            <p class="text-sm text-slate-500 mb-2" data-value="description">Описание</p>
+            <div class="flex items-center gap-4 text-xs text-slate-400">
+              <span data-value="projectName">Проект</span>
+              <span>Срок: <span data-value="dueDate" data-format="date">—</span></span>
+              <div class="flex items-center gap-1">
+                <div class="w-6 h-6 rounded bg-slate-200 flex items-center justify-center text-xs"
+                     data-value="assignee.name" data-format="initials">—</div>
+                <span data-value="assignee.name">Исполнитель</span>
+              </div>
+            </div>
+          </div>
+          <span class="badge" data-value="status" data-enum="TaskStatus">Статус</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api-client.js"></script>
+  <script src="../js/data-binder.js"></script>
+  <script>
+    let filters = { search: '', status: '', priority: '', projectId: '' };
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadTasks();
+      setupFilters();
+    });
+
+    async function loadTasks() {
+      try {
+        const result = await API.tasks.getList(filters);
+        
+        // Статистика
+        DataBinder.bind(document.body, { stats: result.stats });
+        
+        // Список задач
+        const container = document.getElementById('tasks-list');
+        const template = container.querySelector('[data-template="task-card"]');
+        
+        // Очищаем кроме шаблона
+        container.innerHTML = '';
+        container.appendChild(template);
+        
+        if (result.items && result.items.length > 0) {
+          result.items.forEach(task => {
+            const card = template.cloneNode(true);
+            card.classList.remove('hidden');
+            card.removeAttribute('data-template');
+            DataBinder.bind(card, task);
+            
+            // Checkbox обработчик
+            const checkbox = card.querySelector('[data-action="toggle-status"]');
+            if (task.status === 'completed') {
+              checkbox.classList.add('checked');
+            }
+            checkbox.addEventListener('click', () => toggleTaskStatus(task.id, checkbox));
+            
+            container.appendChild(card);
+          });
+        } else {
+          container.innerHTML += '<div class="text-center py-8 text-slate-400">Задачи не найдены</div>';
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки задач:', error);
+      }
+    }
+
+    async function toggleTaskStatus(taskId, checkbox) {
+      try {
+        const newStatus = checkbox.classList.contains('checked') ? 'in_progress' : 'completed';
+        await API.tasks.update(taskId, { status: newStatus });
+        checkbox.classList.toggle('checked');
+        await loadTasks();
+      } catch (error) {
+        console.error('Ошибка обновления статуса:', error);
+      }
+    }
+
+    function setupFilters() {
+      let debounce;
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        clearTimeout(debounce);
+        debounce = setTimeout(() => {
+          filters.search = e.target.value;
+          loadTasks();
+        }, 300);
+      });
+
+      ['statusFilter', 'priorityFilter', 'projectFilter'].forEach(id => {
+        document.getElementById(id).addEventListener('change', (e) => {
+          const key = id.replace('Filter', '');
+          filters[key === 'project' ? 'projectId' : key] = e.target.value;
+          loadTasks();
+        });
+      });
+    }
+  </script>
+</body>
+</html>

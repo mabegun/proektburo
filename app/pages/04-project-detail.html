@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Проект - Проектное бюро</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f8fafc; }
+    
+    .badge { border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; display: inline-block; }
+    .status-draft { background: #f1f5f9; color: #64748b; }
+    .status-in-progress { background: #dbeafe; color: #1d4ed8; }
+    .status-on-approval { background: #fef3c7; color: #d97706; }
+    .status-completed { background: #dcfce7; color: #16a34a; }
+    
+    .section-indicator { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 36px; padding: 0 8px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; position: relative; text-decoration: none; border: 2px solid transparent; }
+    .section-indicator:hover { transform: scale(1.1); z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .section-done { background: #dcfce7; color: #16a34a; }
+    .section-in-progress { background: #dbeafe; color: #1d4ed8; }
+    .section-review { background: #fef3c7; color: #d97706; }
+    .section-not-started { background: #f1f5f9; color: #94a3b8; }
+    .section-overdue { background: #fee2e2; color: #dc2626; }
+    
+    .survey-indicator { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 36px; padding: 0 8px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; position: relative; text-decoration: none; border: 2px solid transparent; }
+    .survey-done { background: #d1fae5; color: #059669; }
+    .survey-in-progress { background: #e0e7ff; color: #4f46e5; }
+    .survey-not-started { background: #f1f5f9; color: #94a3b8; }
+    
+    .tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 14px; border-radius: 10px; font-size: 12px; white-space: nowrap; z-index: 100; opacity: 0; visibility: hidden; transition: all 0.2s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.2); pointer-events: none; }
+    .tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1e293b; }
+    .section-indicator:hover .tooltip, .survey-indicator:hover .tooltip { opacity: 1; visibility: visible; }
+    
+    .tab-btn { padding: 12px 20px; border-radius: 12px 12px 0 0; font-weight: 500; transition: all 0.2s ease; cursor: pointer; border: none; background: transparent; color: #64748b; font-size: 14px; }
+    .tab-btn:hover { background: #f1f5f9; }
+    .tab-btn.active { background: white; color: #1e293b; box-shadow: 0 -1px 3px rgba(0,0,0,0.05); }
+    
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    .sidebar-item { border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; font-size: 14px; color: #475569; text-decoration: none; }
+    .sidebar-item:hover { background: #f1f5f9; }
+    .sidebar-item.active { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; }
+    
+    .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+    .info-row:last-child { border-bottom: none; }
+    
+    .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+    .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); }
+    
+    .btn-secondary { background: white; color: #475569; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+    .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex">
+
+  <!-- Сайдбар -->
+  <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
+    <div class="p-5">
+      <a href="03-projects-list.html" class="flex items-center gap-2 text-slate-500 hover:text-slate-700 mb-4">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" /></svg>
+        К проектам
+      </a>
+    </div>
+
+    <nav class="flex-1 px-3 py-2">
+      <a href="02-dashboard.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Дашборд
+      </a>
+      <a href="03-projects-list.html" class="sidebar-item active">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        Проекты
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Основной контент -->
+  <main class="flex-1 overflow-auto">
+    <!-- Шапка проекта -->
+    <div class="bg-white border-b border-slate-200 p-6">
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-sm font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded" data-value="code">—</span>
+            <h1 class="text-2xl font-bold text-slate-800" data-value="name">Загрузка...</h1>
+            <span class="badge" data-value="status" data-enum="ProjectStatus">—</span>
+          </div>
+          <p class="text-slate-500" data-value="address">—</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn-secondary">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+            Редактировать
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Индикаторы -->
+    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- Изыскания -->
+        <span class="text-xs text-slate-400 font-medium">Изыскания:</span>
+        <div class="flex gap-1.5" data-container="surveys">
+          <a href="#" class="survey-indicator hidden" data-template="survey-indicator">
+            <span data-value="code">—</span>
+            <span class="tooltip">
+              <span class="font-semibold" data-value="name">—</span>
+              <span class="block text-slate-300">Статус: <span data-value="status" data-enum="SurveyStatus">—</span></span>
+              <span class="block text-slate-300">Ответственный: <span data-value="responsible.name">—</span></span>
+            </span>
+          </a>
+        </div>
+        
+        <span class="text-slate-300 mx-2">|</span>
+        
+        <!-- Разделы -->
+        <span class="text-xs text-slate-400 font-medium">Разделы:</span>
+        <div class="flex gap-1.5" data-container="sections">
+          <a href="#" class="section-indicator hidden" data-template="section-indicator">
+            <span data-value="code">—</span>
+            <span class="tooltip">
+              <span class="font-semibold" data-value="name">—</span>
+              <span class="block text-slate-300">Статус: <span data-value="status" data-enum="SectionStatus">—</span></span>
+              <span class="block text-slate-300">Ответственный: <span data-value="responsible.name">—</span></span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Табы -->
+    <div class="bg-slate-100 px-6 pt-4 flex gap-1">
+      <button class="tab-btn active" data-tab="info">Общая информация</button>
+      <button class="tab-btn" data-tab="files">Файлы</button>
+      <button class="tab-btn" data-tab="discussion">Обсуждение</button>
+      <button class="tab-btn" data-tab="expertise">Экспертиза</button>
+      <button class="tab-btn" data-tab="history">История</button>
+      <button class="tab-btn" data-tab="finances">Финансы</button>
+    </div>
+
+    <!-- Контент табов -->
+    <div class="p-6">
+      <!-- Общая информация -->
+      <div class="tab-content active" id="tab-info">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <div class="grid grid-cols-2 gap-8">
+            <div>
+              <h3 class="font-semibold text-slate-800 mb-4">Основная информация</h3>
+              <div class="space-y-0">
+                <div class="info-row">
+                  <span class="text-slate-500">Тип проекта</span>
+                  <span class="font-medium text-slate-800" data-value="type" data-enum="ProjectType">—</span>
+                </div>
+                <div class="info-row">
+                  <span class="text-slate-500">Заказчик</span>
+                  <span class="font-medium text-slate-800" data-value="customer">—</span>
+                </div>
+                <div class="info-row">
+                  <span class="text-slate-500">ГИП</span>
+                  <span class="font-medium text-slate-800" data-value="gip.name">—</span>
+                </div>
+                <div class="info-row">
+                  <span class="text-slate-500">Дата начала</span>
+                  <span class="font-medium text-slate-800" data-value="startDate" data-format="date">—</span>
+                </div>
+                <div class="info-row">
+                  <span class="text-slate-500">Срок сдачи</span>
+                  <span class="font-medium text-slate-800" data-value="deadline" data-format="date">—</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-semibold text-slate-800 mb-4">Характеристики</h3>
+              <div class="space-y-0">
+                <div class="info-row">
+                  <span class="text-slate-500">Площадь</span>
+                  <span class="font-medium text-slate-800"><span data-value="area">—</span> м²</span>
+                </div>
+                <div class="info-row">
+                  <span class="text-slate-500">Этажность</span>
+                  <span class="font-medium text-slate-800" data-value="floors">—</span>
+                </div>
+                <div class="info-row">
+                  <span class="text-slate-500">Прогресс</span>
+                  <span class="font-medium text-slate-800"><span data-value="progress">0</span>%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-6 pt-6 border-t border-slate-100">
+            <h3 class="font-semibold text-slate-800 mb-4">Описание</h3>
+            <p class="text-slate-600" data-value="description">—</p>
+          </div>
+
+          <!-- Команда -->
+          <div class="mt-6 pt-6 border-t border-slate-100">
+            <h3 class="font-semibold text-slate-800 mb-4">Команда проекта</h3>
+            <div class="flex flex-wrap gap-3" data-container="team">
+              <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg hidden" data-template="team-member">
+                <div class="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center text-xs font-semibold"
+                     data-value="name" data-format="initials">—</div>
+                <div>
+                  <p class="text-sm font-medium text-slate-800" data-value="name">—</p>
+                  <p class="text-xs text-slate-500" data-value="role">—</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Файлы -->
+      <div class="tab-content" id="tab-files">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-semibold text-slate-800">Файлы проекта</h3>
+            <button class="btn-primary">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+              Загрузить файл
+            </button>
+          </div>
+          <div class="space-y-2" data-container="files">
+            <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl hidden" data-template="file-item">
+              <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+              </div>
+              <div class="flex-1">
+                <p class="font-medium text-slate-800" data-value="name">filename.pdf</p>
+                <p class="text-xs text-slate-500"><span data-value="size">0</span> КБ • <span data-value="uploadedAt" data-format="date">—</span></p>
+              </div>
+              <span class="badge" data-value="status" data-enum="FileStatus">—</span>
+              <button class="text-slate-400 hover:text-slate-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Обсуждение -->
+      <div class="tab-content" id="tab-discussion">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <div class="mb-6">
+            <textarea class="w-full p-4 border border-slate-200 rounded-xl resize-none" rows="3" placeholder="Написать сообщение..."></textarea>
+            <div class="flex justify-end mt-2">
+              <button class="btn-primary">Отправить</button>
+            </div>
+          </div>
+          <div class="space-y-4" data-container="discussion">
+            <div class="p-4 bg-slate-50 rounded-xl hidden" data-template="message-item">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-lg bg-slate-200 flex items-center justify-center text-xs font-semibold"
+                     data-value="author.name" data-format="initials">—</div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="font-medium text-slate-800" data-value="author.name">—</span>
+                    <span class="text-xs text-slate-400" data-value="createdAt" data-format="relative-time">—</span>
+                  </div>
+                  <p class="text-slate-600" data-value="text">—</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Экспертиза -->
+      <div class="tab-content" id="tab-expertise">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <h3 class="font-semibold text-slate-800 mb-4">Замечания экспертизы</h3>
+          <div class="space-y-3" data-container="expertise">
+            <a href="#" class="block p-4 bg-slate-50 rounded-xl hover:bg-slate-100 hidden" data-template="expertise-item">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-sm font-mono text-slate-500">#<span data-value="number">—</span></span>
+                    <span class="font-medium text-slate-800" data-value="title">—</span>
+                  </div>
+                  <p class="text-sm text-slate-500" data-value="sectionCode">Раздел</p>
+                </div>
+                <span class="badge" data-value="status" data-enum="ExpertiseStatus">—</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- История -->
+      <div class="tab-content" id="tab-history">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <h3 class="font-semibold text-slate-800 mb-4">История изменений</h3>
+          <div class="space-y-4" data-container="history">
+            <div class="flex gap-4 hidden" data-template="history-item">
+              <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                <span data-value="icon">📝</span>
+              </div>
+              <div>
+                <p class="text-slate-800" data-value="description">—</p>
+                <p class="text-xs text-slate-400 mt-1">
+                  <span data-value="author.name">—</span> • 
+                  <span data-value="createdAt" data-format="datetime">—</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Финансы -->
+      <div class="tab-content" id="tab-finances">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <div class="grid grid-cols-3 gap-6 mb-6">
+            <div class="p-4 bg-green-50 rounded-xl">
+              <p class="text-sm text-green-600 mb-1">Доходы</p>
+              <p class="text-2xl font-bold text-green-700" data-value="totalIncome" data-format="money">—</p>
+            </div>
+            <div class="p-4 bg-red-50 rounded-xl">
+              <p class="text-sm text-red-600 mb-1">Расходы</p>
+              <p class="text-2xl font-bold text-red-700" data-value="totalExpenses" data-format="money">—</p>
+            </div>
+            <div class="p-4 bg-blue-50 rounded-xl">
+              <p class="text-sm text-blue-600 mb-1">Баланс</p>
+              <p class="text-2xl font-bold text-blue-700" data-value="balance" data-format="money">—</p>
+            </div>
+          </div>
+          <h3 class="font-semibold text-slate-800 mb-4">Операции</h3>
+          <div class="space-y-2" data-container="finances">
+            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl hidden" data-template="finance-item">
+              <div>
+                <p class="font-medium text-slate-800" data-value="name">—</p>
+                <p class="text-xs text-slate-500" data-value="date" data-format="date">—</p>
+              </div>
+              <span class="font-semibold" data-value="amount" data-format="money" data-class-map="type:text-green-600,text-red-600">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api-client.js"></script>
+  <script src="../js/data-binder.js"></script>
+  <script>
+    let projectId;
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Получаем ID из URL
+      const params = new URLSearchParams(window.location.search);
+      projectId = params.get('id');
+      
+      if (!projectId) {
+        window.location.href = '03-projects-list.html';
+        return;
+      }
+      
+      await loadProject();
+      setupTabs();
+    });
+
+    async function loadProject() {
+      try {
+        const project = await API.projects.getById(projectId);
+        DataBinder.bind(document.body, project);
+        
+        // Рендер списков
+        renderIndicators('surveys', project.surveys);
+        renderIndicators('sections', project.sections);
+        renderList('team', project.team);
+        renderList('files', project.files);
+        renderList('discussion', project.discussion);
+        renderList('expertise', project.expertise);
+        renderList('history', project.history);
+        renderList('finances', project.finances);
+        
+      } catch (error) {
+        console.error('Ошибка загрузки проекта:', error);
+      }
+    }
+
+    function renderIndicators(containerName, items) {
+      const container = document.querySelector(`[data-container="${containerName}"]`);
+      if (!container || !items) return;
+      
+      const template = container.querySelector('[data-template]');
+      items.forEach(item => {
+        const el = template.cloneNode(true);
+        el.classList.remove('hidden');
+        el.removeAttribute('data-template');
+        DataBinder.bind(el, item);
+        container.appendChild(el);
+      });
+    }
+
+    function renderList(containerName, items) {
+      const container = document.querySelector(`[data-container="${containerName}"]`);
+      if (!container || !items) return;
+      
+      const template = container.querySelector('[data-template]');
+      items.forEach(item => {
+        const el = template.cloneNode(true);
+        el.classList.remove('hidden');
+        el.removeAttribute('data-template');
+        DataBinder.bind(el, item);
+        container.appendChild(el);
+      });
+    }
+
+    function setupTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          
+          btn.classList.add('active');
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        });
+      });
+    }
+  </script>
+</body>
+</html>
