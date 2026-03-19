@@ -305,6 +305,232 @@ MOCK_DATA.getMockResponse = function(endpoint) {
   // Auth
   if (endpoint === '/user/profile') return this.currentUser;
 
+  // Sections
+  if (endpoint.match(/^\/sections\/\d+$/)) {
+    const id = parseInt(endpoint.split('/')[2]);
+    // Находим раздел в проектах
+    for (const project of this.projects) {
+      const section = project.sections?.find(s => s.id === id);
+      if (section) {
+        return {
+          ...section,
+          projectId: project.id,
+          projectName: project.name,
+          files: project.files || [],
+          status: section.status,
+        };
+      }
+    }
+    return null;
+  }
+  
+  // Section discussion
+  if (endpoint.match(/^\/sections\/\d+\/discussion$/)) {
+    return {
+      messages: [
+        { id: 1, text: 'Необходимо согласовать отступы от границ участка', createdAt: '2025-03-15T10:00:00Z', author: { id: 1, name: 'Иванов П.С.', role: 'ГИП' }, files: [], replies: [], replyCount: 0 },
+        { id: 2, text: 'Чертежи обновлены, загрузил новую версию', createdAt: '2025-03-16T14:30:00Z', author: { id: 2, name: 'Петров А.И.', role: 'Инженер' }, files: [{ name: 'АР_План_v2.dwg', size: 5000000 }], replies: [], replyCount: 1 },
+      ],
+      stats: { messages: 5, participants: 3, files: 2 },
+    };
+  }
+  
+  // Section history
+  if (endpoint.match(/^\/sections\/\d+\/history$/)) {
+    return {
+      events: [
+        { id: 1, type: 'file_upload', createdAt: new Date().toISOString(), author: { name: 'Петров А.И.' }, data: { fileName: 'АР_План_v2.dwg', fileSize: '5.0 МБ' } },
+        { id: 2, type: 'status_change', createdAt: new Date(Date.now() - 86400000).toISOString(), author: { name: 'Иванов П.С.' }, data: { oldStatus: 'Не начат', newStatus: 'В работе' } },
+        { id: 3, type: 'file_approve', createdAt: new Date(Date.now() - 172800000).toISOString(), author: { name: 'Иванов П.С.' }, data: { fileName: 'АР_Фасады.pdf' } },
+      ],
+      stats: { total: 10, files: 4, status: 2, participants: 1 },
+    };
+  }
+  
+  // Section files
+  if (endpoint.match(/^\/sections\/\d+\/files$/)) {
+    return {
+      files: [
+        { id: 1, name: 'АР_План_этажа.pdf', type: 'pdf', size: 2500000, uploadedBy: 'Иванов П.С.', uploadedAt: '2025-03-10', status: 'approved' },
+        { id: 2, name: 'АР_Фасады.dwg', type: 'dwg', size: 8000000, uploadedBy: 'Петров А.И.', uploadedAt: '2025-03-12', status: 'pending' },
+        { id: 3, name: 'АР_Разрезы.pdf', type: 'pdf', size: 1800000, uploadedBy: 'Сидоров К.М.', uploadedAt: '2025-03-14', status: 'approved' },
+      ],
+    };
+  }
+  
+  // Section expertise
+  if (endpoint.match(/^\/sections\/\d+\/expertise$/)) {
+    return {
+      items: [
+        { id: 1, number: '127', text: 'Не указаны отметки высот на разрезе', status: 'in-progress', priority: 'high', assignee: { name: 'Петров А.И.' }, deadline: '2025-03-20', repliesCount: 2 },
+        { id: 2, number: '128', text: 'Необходимо добавить узел примыкания кровли', status: 'created', priority: 'medium', assignee: { name: 'Сидоров К.М.' }, deadline: '2025-03-25', repliesCount: 0 },
+      ],
+      stats: { total: 2, created: 1, inProgress: 1, review: 0, closed: 0 },
+    };
+  }
+  
+  // Surveys
+  if (endpoint.match(/^\/surveys\/\d+$/)) {
+    const id = parseInt(endpoint.split('/')[2]);
+    for (const project of this.projects) {
+      const survey = project.surveys?.find(s => s.id === id);
+      if (survey) {
+        return {
+          ...survey,
+          projectId: project.id,
+          projectName: project.name,
+          contractor: { name: 'Изыскатель ООО "ГеоПроект"', type: 'ooo', inn: '7712345678', contact: '+7 (495) 111-22-33' },
+          contract: { id: 1, code: 'ИГД-2025-001', date: '2025-01-10', budget: 500000, paid: 250000 },
+          files: [],
+          observers: [],
+          comments: [],
+        };
+      }
+    }
+    return null;
+  }
+  
+  // Survey finances
+  if (endpoint.match(/^\/surveys\/\d+\/finances$/)) {
+    return {
+      payments: [
+        { id: 1, name: 'Аванс 50%', date: '2025-02-15', amount: 250000, status: 'paid', employeeName: 'Изыскатель ООО "ГеоПроект"', contractorType: 'ooo' },
+      ],
+      totalPayments: 1,
+      paid: 250000,
+      pending: 0,
+    };
+  }
+  
+  // Survey expertise
+  if (endpoint.match(/^\/surveys\/\d+\/expertise$/)) {
+    return { items: [], stats: { total: 0 } };
+  }
+  
+  // Expertise
+  if (endpoint === '/expertise') {
+    return {
+      items: [
+        { id: 1, number: '127', text: 'Не указаны отметки высот', status: 'in-progress', priority: 'high', sectionCode: 'АР', assignee: { name: 'Петров А.И.' }, deadline: '2025-03-20' },
+      ],
+      total: 1,
+    };
+  }
+  
+  if (endpoint.match(/^\/expertise\/\d+$/)) {
+    return {
+      id: 1,
+      number: '127',
+      text: 'Не указаны отметки высот на разрезе здания. Требуется уточнить абсолютные отметки пола первого этажа и планировочные отметки территории.',
+      status: 'in-progress',
+      priority: 'high',
+      sectionCode: 'АР',
+      assignee: { id: 2, name: 'Петров А.И.' },
+      deadline: '2025-03-20',
+      file: { name: 'Замечание_127.pdf', size: 150000, url: '#' },
+    };
+  }
+  
+  // Contracts
+  if (endpoint === '/contracts') {
+    return {
+      items: [
+        { id: 1, code: 'ИГД-2025-001', date: '2025-01-10', amount: 500000, status: 'active', contractor: { name: 'Изыскатель ООО "ГеоПроект"' } },
+      ],
+      total: 1,
+    };
+  }
+  
+  if (endpoint.match(/^\/contracts\/\d+$/)) {
+    return {
+      id: 1,
+      code: 'ИГД-2025-001',
+      date: '2025-01-10',
+      amount: 500000,
+      status: 'active',
+      type: 'survey',
+      contractor: { id: 1, name: 'Изыскатель ООО "ГеоПроект"', inn: '7712345678' },
+      sections: [],
+      surveys: [{ id: 1, code: 'ИГД', name: 'Инженерно-геодезические', status: 'done', color: '#22c55e' }],
+      payments: [
+        { id: 1, name: 'Аванс 50%', date: '2025-02-15', amount: 250000, status: 'paid' },
+      ],
+      documents: [
+        { id: 1, name: 'Договор ИГД-2025-001.pdf', type: 'contract', uploadedAt: '2025-01-10', url: '#' },
+      ],
+    };
+  }
+  
+  // Payments
+  if (endpoint === '/payments') {
+    return {
+      items: [
+        { id: 1, number: 'ПЛ-2025-001', date: '2025-02-15', amount: 250000, status: 'paid', employeeName: 'Изыскатель ООО "ГеоПроект"', contractorType: 'ooo' },
+      ],
+      total: 1,
+    };
+  }
+  
+  if (endpoint.match(/^\/payments\/\d+$/)) {
+    return {
+      id: 1,
+      number: 'ПЛ-2025-001',
+      date: '2025-02-15',
+      amount: 250000,
+      status: 'paid',
+      employeeName: 'Изыскатель ООО "ГеоПроект"',
+      contractorType: 'ooo',
+      documentsTotal: 4,
+      documentsUploaded: 4,
+      documents: [
+        { type: 'договор', name: 'Договор.pdf', uploadedAt: '2025-01-10', url: '#' },
+        { type: 'акт', name: 'Акт.pdf', uploadedAt: '2025-02-15', url: '#' },
+        { type: 'счёт', name: 'Счёт.pdf', uploadedAt: '2025-02-14', url: '#' },
+        { type: 'платёжное поручение', name: 'ПП.pdf', uploadedAt: '2025-02-15', url: '#' },
+      ],
+      history: [
+        { description: 'Выплата создана', createdAt: '2025-02-10T10:00:00Z' },
+        { description: 'Документы загружены', createdAt: '2025-02-14T15:00:00Z' },
+        { description: 'Выплата утверждена', createdAt: '2025-02-15T09:00:00Z' },
+      ],
+    };
+  }
+  
+  // Contractors
+  if (endpoint === '/contractors') {
+    return [
+      { id: 1, name: 'Изыскатель ООО "ГеоПроект"', type: 'ooo', inn: '7712345678' },
+      { id: 2, name: 'ИП Сидоров А.В.', type: 'ip', inn: '772345678901' },
+    ];
+  }
+  
+  // Expertise stats
+  if (endpoint === '/expertise/stats/summary') {
+    return { total: 15, created: 3, inProgress: 5, review: 2, closed: 5 };
+  }
+  
+  if (endpoint === '/expertise/stats/by-employee') {
+    return [
+      { name: 'Петров А.И.', total: 5, inProgress: 2, closed: 3 },
+      { name: 'Сидоров К.М.', total: 4, inProgress: 2, closed: 2 },
+      { name: 'Козлов Д.В.', total: 3, inProgress: 1, closed: 2 },
+    ];
+  }
+  
+  if (endpoint === '/expertise/stats/by-section') {
+    return [
+      { code: 'АР', name: 'Архитектурные решения', color: '#3b82f6', total: 5, closed: 3 },
+      { code: 'КР', name: 'Конструктивные решения', color: '#f59e0b', total: 4, closed: 2 },
+    ];
+  }
+  
+  if (endpoint === '/expertise/stats/top-speed') {
+    return [
+      { name: 'Козлов Д.В.', avgDays: 1.5 },
+      { name: 'Петров А.И.', avgDays: 2.3 },
+    ];
+  }
+
   // Default
   console.warn(`Mock data not found for: ${endpoint}`);
   return null;
