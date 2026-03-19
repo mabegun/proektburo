@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>История - ЖК "Северное сияние" - Проектное бюро</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f8fafc; }
+
+    .card { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; transition: all 0.2s ease; }
+    .card-static { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+
+    .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+    .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); transform: translateY(-1px); }
+
+    .btn-secondary { background: white; color: #475569; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; text-decoration: none; }
+    .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .input-field { border-radius: 12px; border: 1px solid #e2e8f0; padding: 12px 16px; transition: all 0.2s ease; background: white; width: 100%; font-size: 14px; }
+    .input-field:focus { outline: none; border-color: #94a3b8; box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15); }
+
+    .sidebar-item { border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; font-size: 14px; color: #475569; text-decoration: none; }
+    .sidebar-item:hover { background: #f1f5f9; }
+    .sidebar-item.active { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; }
+
+    .badge { border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; display: inline-block; }
+    .status-in-progress { background: #dbeafe; color: #1d4ed8; }
+
+    .avatar { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+
+    /* Вкладки */
+    .tab-item {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #64748b;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    .tab-item:hover { color: #334155; background: #f8fafc; }
+    .tab-item.active { color: #1e293b; border-bottom-color: #1e293b; }
+
+    /* История */
+    .history-item { position: relative; padding-left: 28px; }
+    .history-item::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 24px;
+      bottom: -16px;
+      width: 2px;
+      background: #e2e8f0;
+    }
+    .history-item:last-child::before { display: none; }
+    .history-dot {
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .history-dot svg { width: 10px; height: 10px; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex">
+
+  <!-- Сайдбар -->
+  <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
+    <div class="p-5">
+      <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-slate-800 truncate">Иванов П.С.</p>
+          <p class="text-xs text-slate-500">Директор</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-2">
+      <div class="mb-2 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Меню</div>
+
+      <a href="02-dashboard.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Дашборд
+      </a>
+
+      <a href="03-projects-list.html" class="sidebar-item active">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        Проекты
+      </a>
+
+      <a href="07-tasks-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+        Задачи
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">2</span>
+      </a>
+
+      <a href="09-employees-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        Исполнители
+      </a>
+
+      <div class="mb-2 mt-4 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Система</div>
+
+      <a href="11-notifications.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        Уведомления
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">3</span>
+      </a>
+
+      <a href="12-reports.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        Отчёты
+      </a>
+
+      <a href="13-settings.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Настройки
+      </a>
+    </nav>
+
+    <div class="p-3 border-t border-slate-100">
+      <a href="01-login.html" class="sidebar-item text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        Выйти
+      </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 overflow-auto p-8">
+    <!-- Заголовок и действия -->
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <a href="03-projects-list.html" class="text-slate-400 hover:text-slate-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          </a>
+          <h1 class="text-2xl font-bold text-slate-800">ЖК "Северное сияние"</h1>
+          <span class="text-slate-400 text-lg font-mono">2025-001</span>
+          <span class="badge status-in-progress">В работе</span>
+        </div>
+        <p class="text-slate-500">г. Москва, ул. Ленина, д. 45</p>
+      </div>
+      <div class="flex gap-3">
+        <button class="btn-secondary">Редактировать</button>
+        <button class="btn-primary">Скачать проект</button>
+      </div>
+    </div>
+
+    <!-- Вкладки -->
+    <div class="border-b border-slate-200 mb-6">
+      <nav class="flex gap-1">
+        <a href="04-project-detail.html" class="tab-item">
+          Обзор
+        </a>
+        <a href="04-1-project-discussion.html" class="tab-item">
+          Обсуждение
+          <span class="ml-1.5 bg-slate-100 text-slate-600 text-xs px-1.5 py-0.5 rounded-full">3</span>
+        </a>
+        <a href="04-2-project-expertise.html" class="tab-item">
+          Замечания
+          <span class="ml-1.5 bg-amber-100 text-amber-700 text-xs px-1.5 py-0.5 rounded-full">5</span>
+        </a>
+        <a href="04-3-project-history.html" class="tab-item active">
+          История
+        </a>
+        <a href="04-5-project-finances.html" class="tab-item">
+          Финансы
+        </a>
+      </nav>
+    </div>
+
+    <!-- Контент вкладки -->
+    <div class="grid grid-cols-3 gap-6">
+      <!-- Основная область -->
+      <div class="col-span-2 space-y-6">
+        <!-- Фильтры -->
+        <div class="card-static p-4">
+          <div class="flex items-center gap-4">
+            <div class="flex-1">
+              <select class="input-field">
+                <option>Все события</option>
+                <option>📄 Файлы</option>
+                <option>📝 Статусы</option>
+                <option>👤 Участники</option>
+                <option>💰 Расходы</option>
+                <option>💬 Комментарии</option>
+              </select>
+            </div>
+            <div class="flex-1">
+              <select class="input-field">
+                <option>Все авторы</option>
+                <option>Иванов П.С.</option>
+                <option>Петров А.И.</option>
+                <option>Козлов Д.В.</option>
+                <option>Сидоров К.М.</option>
+              </select>
+            </div>
+            <div class="flex-1">
+              <input type="date" class="input-field" value="2025-03-01">
+            </div>
+            <div class="flex-1">
+              <input type="date" class="input-field" value="2025-03-22">
+            </div>
+          </div>
+        </div>
+
+        <!-- История изменений -->
+        <div class="card-static p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="font-semibold text-slate-800">История изменений</h2>
+            <span class="text-sm text-slate-500">24 записи</span>
+          </div>
+
+          <div class="space-y-6">
+            <!-- Дата: Сегодня -->
+            <div>
+              <p class="text-sm font-medium text-slate-500 mb-4">Сегодня, 22 марта</p>
+              
+              <div class="space-y-4">
+                <div class="history-item">
+                  <div class="history-dot" style="border-color: #3b82f6;">
+                    <svg fill="none" stroke="#3b82f6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white text-xs" style="width: 28px; height: 28px;">И</div>
+                    <div class="flex-1">
+                      <p class="text-sm text-slate-800">
+                        <span class="font-medium">Иванов П.С.</span>
+                        <span class="text-slate-500"> загрузил файл</span>
+                        <span class="font-medium text-slate-800"> Договор_ИГД_001.pdf</span>
+                        <span class="text-slate-500"> в раздел </span>
+                        <span class="text-blue-600 font-medium">ИГД</span>
+                      </p>
+                      <p class="text-xs text-slate-400 mt-1">14:32</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="history-item">
+                  <div class="history-dot" style="border-color: #22c55e;">
+                    <svg fill="none" stroke="#22c55e" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white text-xs" style="width: 28px; height: 28px;">И</div>
+                    <div class="flex-1">
+                      <p class="text-sm text-slate-800">
+                        <span class="font-medium">Иванов П.С.</span>
+                        <span class="text-slate-500"> согласовал файл</span>
+                        <span class="font-medium text-slate-800"> Отчёт_ИГД_ч1.pdf</span>
+                      </p>
+                      <p class="text-xs text-slate-400 mt-1">11:15</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="history-item">
+                  <div class="history-dot" style="border-color: #f59e0b;">
+                    <svg fill="none" stroke="#f59e0b" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white text-xs" style="width: 28px; height: 28px;">П</div>
+                    <div class="flex-1">
+                      <p class="text-sm text-slate-800">
+                        <span class="font-medium">Петров А.И.</span>
+                        <span class="text-slate-500"> изменил статус раздела</span>
+                        <span class="text-amber-600 font-medium"> АР</span>
+                        <span class="text-slate-500"> с </span>
+                        <span class="text-slate-600">«В работе»</span>
+                        <span class="text-slate-500"> на </span>
+                        <span class="text-blue-600">«На согласовании»</span>
+                      </p>
+                      <p class="text-xs text-slate-400 mt-1">09:45</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Дата: Вчера -->
+            <div>
+              <p class="text-sm font-medium text-slate-500 mb-4">Вчера, 21 марта</p>
+              
+              <div class="space-y-4">
+                <div class="history-item">
+                  <div class="history-dot" style="border-color: #8b5cf6;">
+                    <svg fill="none" stroke="#8b5cf6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white text-xs" style="width: 28px; height: 28px;">И</div>
+                    <div class="flex-1">
+                      <p class="text-sm text-slate-800">
+                        <span class="font-medium">Иванов П.С.</span>
+                        <span class="text-slate-500"> добавил </span>
+                        <span class="text-purple-600 font-medium">Козлова Д.В.</span>
+                        <span class="text-slate-500"> в команду проекта</span>
+                      </p>
+                      <p class="text-xs text-slate-400 mt-1">16:30</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="history-item">
+                  <div class="history-dot" style="border-color: #ef4444;">
+                    <svg fill="none" stroke="#ef4444" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white text-xs" style="width: 28px; height: 28px;">И</div>
+                    <div class="flex-1">
+                      <p class="text-sm text-slate-800">
+                        <span class="font-medium">Иванов П.С.</span>
+                        <span class="text-slate-500"> создал замечание</span>
+                        <span class="text-red-600 font-medium"> №127</span>
+                        <span class="text-slate-500"> для раздела </span>
+                        <span class="text-amber-600 font-medium">АР</span>
+                      </p>
+                      <p class="text-xs text-slate-400 mt-1">14:20</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="history-item">
+                  <div class="history-dot" style="border-color: #10b981;">
+                    <svg fill="none" stroke="#10b981" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white text-xs" style="width: 28px; height: 28px;">И</div>
+                    <div class="flex-1">
+                      <p class="text-sm text-slate-800">
+                        <span class="font-medium">Иванов П.С.</span>
+                        <span class="text-slate-500"> добавил расход</span>
+                        <span class="text-green-600 font-medium"> 15 000 ₽</span>
+                        <span class="text-slate-500"> — Командировки</span>
+                      </p>
+                      <p class="text-xs text-slate-400 mt-1">11:00</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Дата: 20 марта -->
+            <div>
+              <p class="text-sm font-medium text-slate-500 mb-4">20 марта</p>
+              
+              <div class="space-y-4">
+                <div class="history-item">
+                  <div class="history-dot" style="border-color: #06b6d4;">
+                    <svg fill="none" stroke="#06b6d4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="avatar bg-gradient-to-br from-purple-500 to-purple-400 text-white text-xs" style="width: 28px; height: 28px;">К</div>
+                    <div class="flex-1">
+                      <p class="text-sm text-slate-800">
+                        <span class="font-medium">Козлов Д.В.</span>
+                        <span class="text-slate-500"> добавил комментарий</span>
+                        <span class="text-slate-500"> в обсуждении</span>
+                      </p>
+                      <p class="text-xs text-slate-400 mt-1">15:10</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="history-item">
+                  <div class="history-dot" style="border-color: #3b82f6;">
+                    <svg fill="none" stroke="#3b82f6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white text-xs" style="width: 28px; height: 28px;">П</div>
+                    <div class="flex-1">
+                      <p class="text-sm text-slate-800">
+                        <span class="font-medium">Петров А.И.</span>
+                        <span class="text-slate-500"> загрузил файл</span>
+                        <span class="font-medium text-slate-800"> АР_План_этажей_v3.pdf</span>
+                        <span class="text-slate-500"> в раздел </span>
+                        <span class="text-amber-600 font-medium">АР</span>
+                      </p>
+                      <p class="text-xs text-slate-400 mt-1">11:45</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Кнопка загрузить ещё -->
+          <div class="mt-6 pt-6 border-t border-slate-100 text-center">
+            <button class="text-sm text-slate-500 hover:text-slate-700">
+              Загрузить ещё
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Боковая панель -->
+      <div class="space-y-6">
+        <!-- Фильтр по типу -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-4">Типы событий</h2>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-800 focus:ring-slate-500">
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+              <span class="text-sm text-slate-600">Файлы</span>
+              <span class="ml-auto text-sm text-slate-400">8</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-800 focus:ring-slate-500">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              <span class="text-sm text-slate-600">Статусы</span>
+              <span class="ml-auto text-sm text-slate-400">5</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-800 focus:ring-slate-500">
+              <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+              <span class="text-sm text-slate-600">Участники</span>
+              <span class="ml-auto text-sm text-slate-400">4</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-800 focus:ring-slate-500">
+              <span class="w-2 h-2 rounded-full bg-green-500"></span>
+              <span class="text-sm text-slate-600">Расходы</span>
+              <span class="ml-auto text-sm text-slate-400">3</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-800 focus:ring-slate-500">
+              <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
+              <span class="text-sm text-slate-600">Комментарии</span>
+              <span class="ml-auto text-sm text-slate-400">3</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-slate-800 focus:ring-slate-500">
+              <span class="w-2 h-2 rounded-full bg-red-500"></span>
+              <span class="text-sm text-slate-600">Замечания</span>
+              <span class="ml-auto text-sm text-slate-400">1</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-4">Активность</h2>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-500">Записей за месяц</span>
+              <span class="font-medium text-slate-800">24</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-slate-500">Участников</span>
+              <span class="font-medium text-slate-800">4</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-slate-500">Последнее изменение</span>
+              <span class="font-medium text-slate-800">сегодня</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Экспорт -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-4">Экспорт</h2>
+          <button class="btn-secondary w-full flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Скачать историю
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- API Scripts -->
+  <script src="/js/api-config.js"></script>
+  <script src="/js/api-client.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/ui-helpers.js"></script>
+  <script src="/js/mock-data.js"></script>
+  <script src="/js/shared.js"></script>
+  <script src="/js/pages/project-history.js"></script>
+</body>
+</html>

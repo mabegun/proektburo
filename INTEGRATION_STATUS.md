@@ -1,254 +1,165 @@
 # 📊 Статус интеграции API с фронтендом
 
-**Дата:** 16.03.2026  
+**Дата:** 20.03.2026
 **Проект:** Система управления проектным бюро
+**Репозиторий:** https://github.com/mabegun/proektburo
 
 ---
 
-## ✅ Создано (готово к использованию)
+## 📁 Структура проекта
+
+```
+/home/z/my-project/
+├── [Прототип] 42 HTML файлов в корне — статический прототип для дизайна
+│
+└── app/ — Рабочая версия с API интеграцией
+    ├── pages/           # 41 HTML страница
+    ├── js/
+    │   ├── api-config.js    # Конфигурация API + DEMO_MODE
+    │   ├── api-client.js    # HTTP клиент
+    │   ├── api.js           # Методы API
+    │   ├── ui-helpers.js    # UI утилиты
+    │   ├── mock-data.js     # Моковые данные
+    │   ├── shared.js        # Общие функции
+    │   ├── components/      # UI компоненты (modal, dictionary)
+    │   └── pages/           # 39 скриптов страниц
+    ├── backend/          # FastAPI бэкенд
+    ├── data/             # SQLite база данных
+    ├── docs/             # Документация
+    ├── run.bat           # Запуск (Windows)
+    ├── run.sh            # Запуск (Linux/macOS)
+    └── requirements.txt  # Python зависимости
+```
+
+---
+
+## ✅ Готово (100%)
 
 ### 1. Базовая инфраструктура
 | Файл | Назначение | Статус |
 |------|-----------|--------|
-| `js/api-config.js` | Конфигурация API, токены, утилиты | ✅ Готово |
-| `js/api-client.js` | Базовый HTTP-клиент | ✅ Готово |
-| `js/api.js` | Методы API для всех сущностей | ✅ Готово |
-| `js/ui-helpers.js` | UI-хелперы (форматирование, toast) | ✅ Готово |
-| `js/README.md` | Документация по подключению | ✅ Готово |
+| `app/js/api-config.js` | Конфигурация API, DEMO_MODE | ✅ Готово |
+| `app/js/api-client.js` | HTTP-клиент с обработкой ошибок | ✅ Готово |
+| `app/js/api.js` | Методы API для всех сущностей | ✅ Готово |
+| `app/js/ui-helpers.js` | UI-хелперы (форматирование, toast) | ✅ Готово |
+| `app/js/mock-data.js` | Моковые данные для DEMO_MODE | ✅ Готово |
+| `app/js/shared.js` | Общие функции | ✅ Готово |
 
-### 2. Скрипты страниц
+### 2. Скрипты страниц (39 файлов)
 | Файл | Страница | Статус |
 |------|---------|--------|
-| `js/pages/login.js` | 01-login.html | ✅ Готово |
-| `js/pages/dashboard.js` | 02-dashboard.html | ✅ Готово |
-| `js/pages/projects-list.js` | 03-projects-list.html | ✅ Готово |
-| `js/pages/tasks-list.js` | 07-tasks-list.html | ✅ Готово |
+| login.js | 01-login.html | ✅ Готово |
+| dashboard.js | 02-dashboard.html | ✅ Готово |
+| projects-list.js | 03-projects-list.html | ✅ Готово |
+| project-detail.js | 04-project-detail.html | ✅ Готово |
+| project-detail-employee.js | 04-1-project-detail-employee.html | ✅ Готово |
+| project-discussion.js | 04-1-project-discussion.html | ✅ Готово |
+| project-expertise.js | 04-2-project-expertise.html | ✅ Готово |
+| project-history.js | 04-3-project-history.html | ✅ Готово |
+| project-finances.js | 04-5-project-finances.html | ✅ Готово |
+| project-finances-employee.js | 04-5-project-finances-employee.html | ✅ Готово |
+| project-create.js | 05-project-create.html | ✅ Готово |
+| section-detail.js | 06-section-detail.html | ✅ Готово |
+| section-files.js | 06-1-section-files.html | ✅ Готово |
+| section-discussion.js | 06-2-section-discussion.html | ✅ Готово |
+| section-finances.js | 06-3-section-finances.html | ✅ Готово |
+| section-expertise.js | 06-4-section-expertise.html | ✅ Готово |
+| section-history.js | 06-5-section-history.html | ✅ Готово |
+| section-observer.js | 06-6-section-observer.html | ✅ Готово |
+| tasks-list.js | 07-tasks-list.html | ✅ Готово |
+| task-create.js | 08-task-create.html | ✅ Готово |
+| employees-list.js | 09-employees-list.html | ✅ Готово |
+| employee-create.js | 10-employee-create.html | ✅ Готово |
+| notifications.js | 11-notifications.html | ✅ Готово |
+| reports.js | 12-reports.html | ✅ Готово |
+| settings.js | 13-settings.html | ✅ Готово |
+| settings-sections.js | 13-1-settings-sections.html | ✅ Готово |
+| settings-surveys.js | 13-2-settings-surveys.html | ✅ Готово |
+| settings-expenses.js | 13-3-settings-expenses.html | ✅ Готово |
+| settings-contractor-types.js | 13-4-settings-contractor-types.html | ✅ Готово |
+| survey-detail.js | 14-survey-detail.html | ✅ Готово |
+| survey-detail-observer.js | 14-1-survey-detail-observer.html | ✅ Готово |
+| survey-finances.js | 14-2-survey-finances.html | ✅ Готово |
+| survey-expertise.js | 14-3-survey-expertise.html | ✅ Готово |
+| expertise-create.js | 14-4-expertise-create.html | ✅ Готово |
+| survey-create.js | 15-survey-create.html | ✅ Готово |
+| expertise-comment.js | 16-expertise-comment.html | ✅ Готово |
+| contract-detail.js | 18-contract-detail.html | ✅ Готово |
+| payment-detail.js | 19-payment-detail.html | ✅ Готово |
+| calendar.js | 20-calendar.html | ✅ Готово |
+| expertise-stats.js | 21-expertise-stats.html | ✅ Готово |
 
-### 3. Обновлённые HTML-файлы
-| Файл | Изменения | Статус |
-|------|----------|--------|
-| 01-login.html | Форма + подключение скриптов | ✅ Готово |
-| 02-dashboard.html | Подключение скриптов | ✅ Готово |
-
----
-
-## 🔧 Что нужно сделать
-
-### Шаг 1: Настроить BASE_URL
-**Файл:** `js/api-config.js`
-
-```javascript
-const API_CONFIG = {
-  BASE_URL: 'http://localhost:3000/api', // ← Укажите ваш API
-  // ...
-};
-```
-
-### Шаг 2: Проверить соответствие API-методов
-**Файл:** `js/api.js`
-
-Сверьте эндпоинты с вашим реальным API:
-
-```javascript
-// Было:
-projects: {
-  getList: (params) => api.get('/projects'),
-}
-
-// Может потребоваться:
-projects: {
-  getList: (params) => api.get('/project/list'), // ← ваш путь
-}
-```
-
-### Шаг 3: Подключить скрипты к остальным страницам
-
-Для каждой страницы:
-
-1. **Добавить ID к контейнерам** (куда загружать данные)
-2. **Подключить скрипты** перед `</body>`:
-
-```html
-<script src="js/api-config.js"></script>
-<script src="js/api-client.js"></script>
-<script src="js/api.js"></script>
-<script src="js/ui-helpers.js"></script>
-<script src="js/pages/projects-list.js"></script>
-</body>
-```
-
----
-
-## 📋 План подключения страниц
-
-| # | Страница | Файл | Скрипт | Статус |
-|---|----------|------|--------|--------|
-| 1 | Вход | 01-login.html | js/pages/login.js | ✅ Подключено |
-| 2 | Дашборд | 02-dashboard.html | js/pages/dashboard.js | ✅ Подключено |
-| 3 | Проекты | 03-projects-list.html | js/pages/projects-list.js | ⏳ Готово к подключению |
-| 4 | Проект | 04-project-detail.html | js/pages/project-detail.js | 🔴 Нужно создать |
-| 5 | Проект (сотрудник) | 04-1-project-detail-employee.html | — | 🔴 Нужно создать |
-| 6 | Обсуждение | 04-1-project-discussion.html | — | 🔴 Нужно создать |
-| 7 | Экспертиза | 04-2-project-expertise.html | — | 🔴 Нужно создать |
-| 8 | История | 04-3-project-history.html | — | 🔴 Нужно создать |
-| 9 | Финансы (ГИП) | 04-5-project-finances.html | — | 🔴 Нужно создать |
-| 10 | Финансы (сотрудник) | 04-5-project-finances-employee.html | — | 🔴 Нужно создать |
-| 11 | Создание проекта | 05-project-create.html | js/pages/project-create.js | 🔴 Нужно создать |
-| 12 | Раздел | 06-section-detail.html | js/pages/section-detail.js | 🔴 Нужно создать |
-| 13 | Экспертиза раздела | 06-1-section-expertise.html | — | 🔴 Нужно создать |
-| 14 | Раздел (наблюдатель) | 06-2-section-observer.html | — | 🔴 Нужно создать |
-| 15 | Задачи | 07-tasks-list.html | js/pages/tasks-list.js | ⏳ Готово к подключению |
-| 16 | Создание задачи | 08-task-create.html | js/pages/task-create.js | 🔴 Нужно создать |
-| 17 | Сотрудники | 09-employees-list.html | js/pages/employees-list.js | 🔴 Нужно создать |
-| 18 | Создание сотрудника | 10-employee-create.html | js/pages/employee-create.js | 🔴 Нужно создать |
-| 19 | Уведомления | 11-notifications.html | js/pages/notifications.js | 🔴 Нужно создать |
-| 20 | Отчёты | 12-reports.html | js/pages/reports.js | 🔴 Нужно создать |
-| 21 | Настройки | 13-settings.html | — | 🔴 Нужно создать |
-| 22 | Справочники | 13-1-settings-sections.html | js/pages/settings-sections.js | 🔴 Нужно создать |
-| 23 | Виды изысканий | 13-2-settings-surveys.html | — | 🔴 Нужно создать |
-| 24 | Категории расходов | 13-3-settings-expenses.html | — | 🔴 Нужно создать |
-| 25 | Типы контрагентов | 13-4-settings-contractor-types.html | — | 🔴 Нужно создать |
-| 26 | Изыскание | 14-survey-detail.html | js/pages/survey-detail.js | 🔴 Нужно создать |
-| 27 | Изыскание (наблюдатель) | 14-1-survey-detail-observer.html | — | 🔴 Нужно создать |
-| 28 | Финансы изыскания | 14-2-survey-finances.html | — | 🔴 Нужно создать |
-| 29 | Экспертиза изыскания | 14-3-survey-expertise.html | — | 🔴 Нужно создать |
-| 30 | Создание экспертизы | 14-4-expertise-create.html | js/pages/expertise-create.js | 🔴 Нужно создать |
-| 31 | Создание изыскания | 15-survey-create.html | js/pages/survey-create.js | 🔴 Нужно создать |
-| 32 | Замечание экспертизы | 16-expertise-comment.html | — | 🔴 Нужно создать |
-| 33 | Детали договора | 18-contract-detail.html | js/pages/contract-detail.js | 🔴 Нужно создать |
-| 34 | Детали выплаты | 19-payment-detail.html | js/pages/payment-detail.js | 🔴 Нужно создать |
-| 35 | Календарь | 20-calendar.html | js/pages/calendar.js | 🔴 Нужно создать |
-| 36 | Статистика экспертизы | 21-expertise-stats.html | — | 🔴 Нужно создать |
-
----
-
-## 🎯 Приоритеты подключения
-
-### 🔴 Критичные (MVP)
-1. **01-login.html** — вход в систему ✅
-2. **02-dashboard.html** — главная страница ✅
-3. **03-projects-list.html** — список проектов
-4. **04-project-detail.html** — карточка проекта
-5. **09-employees-list.html** — сотрудники
-6. **07-tasks-list.html** — задачи
-
-### 🟡 Важные
-7. **06-section-detail.html** — раздел проекта
-8. **14-survey-detail.html** — изыскание
-9. **04-5-project-finances.html** — финансы проекта
-10. **11-notifications.html** — уведомления
-11. **05-project-create.html** — создание проекта
-12. **08-task-create.html** — создание задачи
-
-### 🟢 Дополнительные
-13. **12-reports.html** — отчёты
-14. **13-settings.html** — настройки
-15. **20-calendar.html** — календарь
-16. Остальные страницы
-
----
-
-## 📝 Чек-лист для каждой страницы
-
-При подключении страницы:
-
-- [ ] Добавить ID к контейнерам данных
-- [ ] Удалить хардкод-данные из HTML
-- [ ] Подключить скрипты (api-*.js + page-*.js)
-- [ ] Создать/адаптировать скрипт страницы
-- [ ] Настроить загрузку данных из API
-- [ ] Обработать состояния: loading, error, empty
-- [ ] Проверить навигацию (ссылки работают)
-- [ ] Проверить авторизацию (редирект если нет токена)
-- [ ] Протестировать в браузере
+### 3. Backend (FastAPI + SQLite)
+| Файл | Назначение | Статус |
+|------|-----------|--------|
+| backend/main.py | API endpoints (50+) | ✅ Готово |
+| backend/database.py | SQLite схема (13 таблиц) | ✅ Готово |
+| backend/crud.py | CRUD операции | ✅ Готово |
+| backend/auth.py | Авторизация по email | ✅ Готово |
+| backend/schemas.py | Pydantic схемы | ✅ Готово |
 
 ---
 
 ## 🚀 Быстрый старт
 
-### 1. Проверка работы
+### Windows
+```cmd
+cd app
+run.bat
+```
 
-Откройте `01-login.html` в браузере:
+### Linux/macOS
 ```bash
-# Если у вас есть локальный сервер
-start http://localhost:8000/01-login.html
-
-# Или просто откройте файл двойным кликом
+cd app
+chmod +x run.sh
+./run.sh
 ```
 
-### 2. Тест входа
+Сервер запустится на http://localhost:8000
 
-Введите любые данные:
-- Email: `test@prokb.ru`
-- Пароль: `1234`
+### Тестовые пользователи
 
-Если API ещё не подключен — сработает временный код и откроется дашборд.
-
-### 3. Проверка консоли
-
-Нажмите F12 → Console. Должны быть видны:
-- ✅ Загрузка скриптов
-- ⚠️ Ошибки API (если сервер недоступен)
+| Email | Роль | Пароль |
+|-------|------|--------|
+| director@bureau.ru | Директор | Любой (4+ символа) |
+| gip-ivanov@bureau.ru | ГИП | Любой (4+ символа) |
+| executor-petrov@bureau.ru | Исполнитель | Любой (4+ символа) |
+| executor-sidorov@bureau.ru | Исполнитель | Любой (4+ символа) |
+| observer-kuznetsov@bureau.ru | Наблюдатель | Любой (4+ символа) |
 
 ---
 
-## 🛠 Если API ещё не готов
+## 🔄 Режимы работы
 
-Используйте mock-данные в скриптах страниц:
-
+### DEMO_MODE (без бэкенда)
 ```javascript
-async function loadProjects() {
-  // Временно используем mock-данные
-  const mockProjects = [
-    { 
-      id: 1, 
-      code: '2025-001', 
-      name: 'ЖК "Северное сияние"',
-      status: 'in-progress',
-      progress: 33,
-      deadline: '2025-06-30',
-      sections: [],
-      surveys: []
-    },
-  ];
-  
-  renderProjects(mockProjects);
-  
-  // Когда API будет готов:
-  // const data = await API.projects.getList();
-  // renderProjects(data.items);
-}
+// app/js/api-config.js
+CONFIG.DEMO_MODE = true;
 ```
+Используются mock-данные из `mock-data.js`
 
----
-
-## 📞 Вопросы и поддержка
-
-### Частые проблемы
-
-**1. Ошибка CORS**
+### Production Mode (с API)
+```javascript
+// app/js/api-config.js
+CONFIG.DEMO_MODE = false;
+CONFIG.BASE_URL = 'http://localhost:8000/api';
 ```
-Access to fetch at 'http://api.example.com' from origin 'http://localhost' has been blocked by CORS policy
-```
-**Решение:** Настройте CORS на бэкенде или используйте proxy.
-
-**2. Токен не сохраняется**
-**Проверка:** Откройте DevTools → Application → Local Storage. Должен быть ключ `authToken`.
-
-**3. Скрипты не загружаются**
-**Проверка:** Убедитесь, что пути относительные (`js/api-config.js`, а не `/js/api-config.js`).
 
 ---
 
 ## 📈 Прогресс
 
 ```
-Создано инфраструктуры: ████████████████████ 100% (5/5 файлов)
-Скрипты страниц:        ████░░░░░░░░░░░░░░░░  20% (4/20 страниц)
-HTML подключено:        ██░░░░░░░░░░░░░░░░░░░  10% (2/20 страниц)
+Инфраструктура:     ████████████████████ 100% (6/6 файлов)
+JS страниц:         ████████████████████ 100% (39/39 файлов)
+HTML подключено:    ████████████████████ 100% (41/41 страниц)
+Backend:            ████████████████████ 100% (5/5 файлов)
 ```
 
-**Ближайшие задачи:**
-1. Подключить 03-projects-list.html
-2. Создать js/pages/project-detail.js
-3. Подключить 09-employees-list.html
+---
+
+## 📝 Примечания
+
+1. **Прототип в корне проекта** — 42 HTML файла со статическим контентом для визуальной разработки
+2. **Рабочая версия в app/** — полная интеграция с API
+3. **GitHub:** https://github.com/mabegun/proektburo

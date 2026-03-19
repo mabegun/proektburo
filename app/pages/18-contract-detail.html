@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Договор № 123/2025 - Проектное бюро</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f8fafc; }
+
+    .card { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; transition: all 0.2s ease; }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .card-static { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+
+    .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+    .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); transform: translateY(-1px); }
+
+    .btn-secondary { background: white; color: #475569; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .btn-ghost { background: transparent; color: #64748b; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-ghost:hover { background: #f1f5f9; color: #334155; }
+
+    .sidebar-item { border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; font-size: 14px; color: #475569; text-decoration: none; }
+    .sidebar-item:hover { background: #f1f5f9; }
+    .sidebar-item.active { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; }
+
+    .badge { border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; display: inline-block; }
+    .status-active { background: #dcfce7; color: #16a34a; }
+    .status-completed { background: #f1f5f9; color: #64748b; }
+    .status-cancelled { background: #fee2e2; color: #dc2626; }
+
+    .avatar { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+
+    .progress-bar { height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #1e293b, #64748b); border-radius: 4px; transition: width 0.5s ease; }
+
+    .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: #64748b; font-size: 14px; }
+    .info-value { color: #1e293b; font-weight: 500; font-size: 14px; text-align: right; }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #fafafa;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .file-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+    }
+    .file-icon.pdf { background: #fee2e2; color: #dc2626; }
+    .file-icon.doc { background: #dbeafe; color: #1d4ed8; }
+    .file-icon.zip { background: #fef3c7; color: #d97706; }
+
+    .tab-item {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #64748b;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    .tab-item:hover {
+      color: #334155;
+      background: #f8fafc;
+    }
+    .tab-item.active {
+      color: #1e293b;
+      border-bottom-color: #1e293b;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 32px;
+      padding-bottom: 24px;
+    }
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e2e8f0;
+    }
+    .timeline-item:last-child::before {
+      bottom: auto;
+      height: 24px;
+    }
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 2px solid white;
+    }
+    .timeline-item.completed::after {
+      background: #16a34a;
+    }
+    .timeline-item.pending::after {
+      background: #e2e8f0;
+    }
+    .timeline-date {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+    .timeline-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1e293b;
+    }
+    .timeline-description {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex">
+
+  <!-- Сайдбар -->
+  <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
+    <div class="p-5">
+      <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-slate-800 truncate">Иванов П.С.</p>
+          <p class="text-xs text-slate-500">Директор</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-2">
+      <div class="mb-2 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Меню</div>
+
+      <a href="02-dashboard.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Дашборд
+      </a>
+
+      <a href="03-projects-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        Проекты
+      </a>
+
+      <a href="07-tasks-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+        Задачи
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">2</span>
+      </a>
+
+      <a href="09-employees-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        Исполнители
+      </a>
+
+      <div class="mb-2 mt-4 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Система</div>
+
+      <a href="11-notifications.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        Уведомления
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">3</span>
+      </a>
+
+      <a href="12-reports.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        Отчёты
+      </a>
+
+      <a href="13-settings.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Настройки
+      </a>
+    </nav>
+
+    <div class="p-3 border-t border-slate-100">
+      <a href="01-login.html" class="sidebar-item text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        Выйти
+      </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 overflow-auto p-8">
+    <!-- Заголовок -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <a href="04-project-detail.html?id=1" class="text-slate-400 hover:text-slate-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+        </a>
+        <span class="text-sm text-slate-500">Проекты</span>
+        <span class="text-slate-300">/</span>
+        <a href="04-project-detail.html?id=1" class="text-sm text-slate-500 hover:text-slate-700">2025-001</a>
+        <span class="text-slate-300">/</span>
+        <span class="text-sm text-slate-700 font-medium">Договор № 123/2025</span>
+      </div>
+      
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-800">Договор № 123/2025</h1>
+          <p class="text-slate-500 mt-1">Инженерно-геодезические изыскания • ООО "ГеоИзЫскания"</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn-secondary">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Редактировать
+          </button>
+          <button class="btn-primary">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Скачать
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладки -->
+    <div class="border-b border-slate-200 mb-6">
+      <nav class="flex gap-1">
+        <a href="#" class="tab-item active">
+          Обзор
+        </a>
+        <a href="#" class="tab-item">
+          Выплаты
+          <span class="ml-1.5 bg-slate-100 text-slate-600 text-xs px-1.5 py-0.5 rounded-full">3</span>
+        </a>
+        <a href="#" class="tab-item">
+          Документы
+        </a>
+        <a href="#" class="tab-item">
+          История
+        </a>
+      </nav>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+      <!-- Основная информация -->
+      <div class="col-span-2 space-y-6">
+        <!-- Информация о договоре -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-5">Информация о договоре</h2>
+          
+          <div class="info-row">
+            <span class="info-label">Номер договора</span>
+            <span class="info-value">123/2025</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Дата заключения</span>
+            <span class="info-value">15.01.2025</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Тип договора</span>
+            <span class="info-value">Подряд</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Сумма договора</span>
+            <span class="info-value">350 000 ₽</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Статус</span>
+            <span class="badge status-active">Действует</span>
+          </div>
+        </div>
+
+        <!-- Контрагент -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-5">Контрагент</h2>
+          
+          <div class="flex items-start gap-4 mb-5">
+            <div class="avatar bg-blue-100 text-blue-600" style="width: 56px; height: 56px; font-size: 18px;">Г</div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-slate-800">ООО "ГеоИзЫскания"</h3>
+              <p class="text-sm text-slate-500">Тип: ООО</p>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">ИНН</span>
+            <span class="info-value">7701234567</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">КПП</span>
+            <span class="info-value">770101001</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Юридический адрес</span>
+            <span class="info-value">г. Москва, ул. Ленина, д. 10, оф. 5</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Телефон</span>
+            <span class="info-value">+7 (495) 123-45-67</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Email</span>
+            <span class="info-value">info@geoiziskaniya.ru</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Контактное лицо</span>
+            <span class="info-value">Смирнов А.В., главный инженер</span>
+          </div>
+
+          <div class="mt-5 pt-5 border-t border-slate-100">
+            <a href="09-employees-list.html" class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              Открыть карточку контрагента
+            </a>
+          </div>
+        </div>
+
+        <!-- Связанные разделы и изыскания -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-5">Связанные объекты</h2>
+          
+          <div class="mb-5">
+            <p class="text-sm font-medium text-slate-700 mb-3">Изыскания</p>
+            <div class="space-y-2">
+              <a href="14-survey-detail.html" class="block p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                      <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-medium text-slate-800">ИГИ — Инженерно-геологические изыскания</p>
+                      <p class="text-xs text-slate-500">2025-001 • В работе</p>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-sm font-medium text-slate-700 mb-3">Разделы проекта</p>
+            <div class="space-y-2">
+              <a href="06-section-detail.html" class="block p-3 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                      <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-medium text-slate-800">АР — Архитектурные решения</p>
+                      <p class="text-xs text-slate-500">2025-001 • Завершён</p>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Выплаты по договору -->
+        <div class="card-static p-6">
+          <div class="flex justify-between items-center mb-5">
+            <h2 class="font-semibold text-slate-800">Выплаты</h2>
+            <a href="04-5-project-finances.html" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Все →</a>
+          </div>
+
+          <!-- Прогресс выплат -->
+          <div class="mb-5">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm text-slate-600">Выплачено</span>
+              <span class="text-sm font-semibold text-slate-800">80 000 ₽ из 350 000 ₽ (23%)</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill" style="width: 23%"></div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <!-- Выплата 1 -->
+            <a href="19-payment-detail.html" class="block p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <p class="font-medium text-slate-800">Авансовый платёж</p>
+                  <p class="text-sm text-slate-500">15.02.2025</p>
+                </div>
+                <span class="badge status-completed">Выплачено</span>
+              </div>
+              <p class="text-lg font-semibold text-slate-800">50 000 ₽</p>
+            </a>
+
+            <!-- Выплата 2 -->
+            <a href="19-payment-detail.html" class="block p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <p class="font-medium text-slate-800">Промежуточный платёж</p>
+                  <p class="text-sm text-slate-500">15.03.2025</p>
+                </div>
+                <span class="badge status-completed">Выплачено</span>
+              </div>
+              <p class="text-lg font-semibold text-slate-800">30 000 ₽</p>
+            </a>
+
+            <!-- Выплата 3 -->
+            <a href="19-payment-detail.html" class="block p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <p class="font-medium text-slate-800">Окончательный расчёт</p>
+                  <p class="text-sm text-slate-500">Ожидается до 30.04.2025</p>
+                </div>
+                <span class="badge status-active">Согласовано</span>
+              </div>
+              <p class="text-lg font-semibold text-slate-800">270 000 ₽</p>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Боковая панель -->
+      <div class="space-y-6">
+        <!-- Файлы договора -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-5">Документы</h2>
+          
+          <div class="space-y-3">
+            <a href="#" class="file-item">
+              <div class="flex items-center gap-3">
+                <div class="file-icon pdf">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-700">Договор_123-2025.pdf</p>
+                  <p class="text-xs text-slate-400">2.4 МБ</p>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </a>
+
+            <a href="#" class="file-item">
+              <div class="flex items-center gap-3">
+                <div class="file-icon pdf">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-700">Допсоглашение №1.pdf</p>
+                  <p class="text-xs text-slate-400">1.1 МБ • 10.03.2025</p>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </a>
+
+            <a href="#" class="file-item">
+              <div class="flex items-center gap-3">
+                <div class="file-icon zip">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-700">Приложения.zip</p>
+                  <p class="text-xs text-slate-400">15.3 МБ</p>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </a>
+          </div>
+
+          <button class="btn-secondary w-full mt-4 justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Добавить документ
+          </button>
+        </div>
+
+        <!-- История изменений -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-5">История изменений</h2>
+          
+          <div class="timeline-item completed">
+            <div class="timeline-date">15.03.2025 в 14:30</div>
+            <div class="timeline-title">Добавлено допсоглашение №1</div>
+            <div class="timeline-description">Иванов П.С. загрузил документ</div>
+          </div>
+
+          <div class="timeline-item completed">
+            <div class="timeline-date">10.03.2025 в 11:15</div>
+            <div class="timeline-title">Изменена сумма договора</div>
+            <div class="timeline-description">300 000 ₽ → 350 000 ₽</div>
+          </div>
+
+          <div class="timeline-item completed">
+            <div class="timeline-date">15.02.2025 в 09:00</div>
+            <div class="timeline-title">Выплачен аванс</div>
+            <div class="timeline-description">50 000 ₽ выплачено контрагенту</div>
+          </div>
+
+          <div class="timeline-item completed">
+            <div class="timeline-date">15.01.2025 в 16:45</div>
+            <div class="timeline-title">Договор создан</div>
+            <div class="timeline-description">Иванов П.С. создал договор № 123/2025</div>
+          </div>
+        </div>
+
+        <!-- Быстрые действия -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-4">Действия</h2>
+          
+          <div class="space-y-2">
+            <button class="btn-secondary w-full justify-start">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Создать выплату
+            </button>
+            
+            <button class="btn-secondary w-full justify-start">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Установить напоминание
+            </button>
+            
+            <button class="btn-secondary w-full justify-start">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Копировать реквизиты
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  
+  <!-- API Scripts -->
+  <script src="/js/api-config.js"></script>
+  <script src="/js/api-client.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/ui-helpers.js"></script>
+  <script src="/js/mock-data.js"></script>
+  <script src="/js/shared.js"></script>
+  <script src="/js/pages/contract-detail.js"></script>
+</body>
+</html>

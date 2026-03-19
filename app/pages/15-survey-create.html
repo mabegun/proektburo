@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Создание изыскания - Проектное бюро</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f8fafc; }
+
+    .card { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; transition: all 0.2s ease; }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .card-static { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+
+    .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+    .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); transform: translateY(-1px); }
+
+    .btn-secondary { background: white; color: #475569; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .btn-ghost { background: transparent; color: #64748b; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-ghost:hover { background: #f1f5f9; color: #334155; }
+
+    .input-field { border-radius: 12px; border: 1px solid #e2e8f0; padding: 12px 16px; transition: all 0.2s ease; background: white; width: 100%; font-size: 14px; }
+    .input-field:focus { outline: none; border-color: #94a3b8; box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15); }
+    .input-field::file-selector-button {
+      background: #f1f5f9;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-right: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #475569;
+    }
+    .input-field::file-selector-button:hover { background: #e2e8f0; }
+
+    .sidebar-item { border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; font-size: 14px; color: #475569; text-decoration: none; }
+    .sidebar-item:hover { background: #f1f5f9; }
+    .sidebar-item.active { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; }
+
+    .badge { border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; display: inline-block; }
+    .status-not-started { background: #f1f5f9; color: #64748b; }
+    .status-in-progress { background: #dbeafe; color: #1d4ed8; }
+    .status-completed { background: #dcfce7; color: #16a34a; }
+
+    .avatar { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+
+    .select-field {
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 12px 16px;
+      transition: all 0.2s ease;
+      background: white;
+      width: 100%;
+      font-size: 14px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 44px;
+    }
+    .select-field:focus { outline: none; border-color: #94a3b8; box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15); }
+
+    .form-label { display: block; text-align: left; font-size: 14px; font-weight: 500; color: #475569; margin-bottom: 8px; }
+    .form-hint { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+    .form-error { font-size: 13px; color: #dc2626; margin-top: 6px; }
+
+    .file-upload {
+      border: 2px dashed #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      background: #fafafa;
+    }
+    .file-upload:hover {
+      border-color: #94a3b8;
+      background: #f1f5f9;
+    }
+    .file-upload.dragover {
+      border-color: #1e293b;
+      background: #f1f5f9;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex">
+
+  <!-- Сайдбар -->
+  <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
+    <div class="p-5">
+      <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-slate-800 truncate">Иванов П.С.</p>
+          <p class="text-xs text-slate-500">Директор</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-2">
+      <div class="mb-2 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Меню</div>
+
+      <a href="02-dashboard.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Дашборд
+      </a>
+
+      <a href="03-projects-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        Проекты
+      </a>
+
+      <a href="07-tasks-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+        Задачи
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">2</span>
+      </a>
+
+      <a href="09-employees-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        Исполнители
+      </a>
+
+      <div class="mb-2 mt-4 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Система</div>
+
+      <a href="11-notifications.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        Уведомления
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">3</span>
+      </a>
+
+      <a href="12-reports.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        Отчёты
+      </a>
+
+      <a href="13-settings.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Настройки
+      </a>
+    </nav>
+
+    <div class="p-3 border-t border-slate-100">
+      <a href="01-login.html" class="sidebar-item text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        Выйти
+      </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 overflow-auto p-8">
+    <!-- Заголовок -->
+    <div class="mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <a href="04-project-detail.html?id=1" class="text-slate-400 hover:text-slate-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+        </a>
+        <span class="text-sm text-slate-500">Проекты</span>
+        <span class="text-slate-300">/</span>
+        <a href="04-project-detail.html?id=1" class="text-sm text-slate-500 hover:text-slate-700">2025-001</a>
+        <span class="text-slate-300">/</span>
+        <span class="text-sm text-slate-700 font-medium">Новое изыскание</span>
+      </div>
+      <h1 class="text-2xl font-bold text-slate-800">Создание изыскания</h1>
+      <p class="text-slate-500 mt-1">Добавление нового проектного изыскания в проект ЖК "Северное сияние"</p>
+    </div>
+
+    <form class="max-w-4xl">
+      <!-- Основная информация -->
+      <div class="card-static p-6 mb-6">
+        <h2 class="font-semibold text-slate-800 mb-5">Основная информация</h2>
+        
+        <div class="grid grid-cols-2 gap-5">
+          <div>
+            <label class="form-label">Тип изыскания *</label>
+            <select class="select-field" id="surveyType" required>
+              <option value="">Выберите тип изыскания</option>
+              <option value="igd">ИГД — Инженерно-геодезические изыскания</option>
+              <option value="igi">ИГИ — Инженерно-геологические изыскания</option>
+              <option value="iei">ИЭИ — Инженерно-экологические изыскания</option>
+              <option value="iadi">ИАДИ — Инженерно-археологические изыскания</option>
+            </select>
+            <p class="form-hint">Выберите тип из справочника</p>
+          </div>
+
+          <div>
+            <label class="form-label">Ответственный *</label>
+            <select class="select-field" id="responsible" required>
+              <option value="">Выберите ответственного</option>
+              <option value="1">Иванов П.С. (Директор)</option>
+              <option value="2">Петров А.И. (Архитектор)</option>
+              <option value="3">Сидоров К.М. (Геодезист)</option>
+              <option value="4">Козлов Д.В. (Конструктор)</option>
+            </select>
+            <p class="form-hint">Сотрудник, ответственный за изыскание</p>
+          </div>
+
+          <div>
+            <label class="form-label">Дедлайн</label>
+            <input type="date" class="input-field" id="deadline">
+            <p class="form-hint">Планируемая дата завершения</p>
+          </div>
+
+          <div>
+            <label class="form-label">Бюджет, ₽</label>
+            <input type="number" class="input-field" id="budget" placeholder="0" min="0">
+            <p class="form-hint">Планируемая стоимость изыскания</p>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <label class="form-label">Комментарий</label>
+          <textarea class="input-field" id="comment" rows="3" placeholder="Дополнительная информация об изыскании..."></textarea>
+          <p class="form-hint">Необязательное поле</p>
+        </div>
+      </div>
+
+      <!-- Исполнитель (юрлицо) -->
+      <div class="card-static p-6 mb-6">
+        <h2 class="font-semibold text-slate-800 mb-5">Исполнитель работ</h2>
+        
+        <div class="mb-5">
+          <label class="form-label">Тип исполнителя</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="contractorType" value="external" class="w-4 h-4" checked onchange="toggleContractor(true)">
+              <span class="text-sm text-slate-700">Внешняя организация</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="contractorType" value="internal" class="w-4 h-4" onchange="toggleContractor(false)">
+              <span class="text-sm text-slate-700">Внутренний сотрудник</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="contractorBlock">
+          <div class="grid grid-cols-2 gap-5 mb-5">
+            <div>
+              <label class="form-label">Наименование организации *</label>
+              <input type="text" class="input-field" id="contractorName" placeholder="ООО &quot;ГеоИзЫскания&quot;">
+            </div>
+
+            <div>
+              <label class="form-label">ИНН *</label>
+              <input type="text" class="input-field" id="contractorInn" placeholder="7701234567" maxlength="10">
+            </div>
+
+            <div>
+              <label class="form-label">КПП</label>
+              <input type="text" class="input-field" id="contractorKpp" placeholder="770101001" maxlength="9">
+            </div>
+
+            <div>
+              <label class="form-label">Юридический адрес</label>
+              <input type="text" class="input-field" id="contractorAddress" placeholder="г. Москва, ул. Примерная, д. 1">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-5 mb-5">
+            <div>
+              <label class="form-label">Телефон</label>
+              <input type="tel" class="input-field" id="contractorPhone" placeholder="+7 (495) 123-45-67">
+            </div>
+
+            <div>
+              <label class="form-label">Email</label>
+              <input type="email" class="input-field" id="contractorEmail" placeholder="info@geoiziskaniya.ru">
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Контактное лицо</label>
+            <input type="text" class="input-field" id="contractorContact" placeholder="ФИО контактного лица, должность">
+          </div>
+        </div>
+      </div>
+
+      <!-- Договор -->
+      <div class="card-static p-6 mb-6">
+        <h2 class="font-semibold text-slate-800 mb-5">Договор</h2>
+        
+        <div class="grid grid-cols-2 gap-5 mb-5">
+          <div>
+            <label class="form-label">Номер договора</label>
+            <input type="text" class="input-field" id="contractNumber" placeholder="123/2025">
+          </div>
+
+          <div>
+            <label class="form-label">Дата договора</label>
+            <input type="date" class="input-field" id="contractDate">
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Файл договора</label>
+          <div class="file-upload" id="contractUpload" onclick="document.getElementById('contractFile').click()">
+            <input type="file" id="contractFile" class="hidden" accept=".pdf,.doc,.docx">
+            <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p class="text-sm text-slate-600 font-medium">Нажмите для загрузки или перетащите файл</p>
+            <p class="text-xs text-slate-400 mt-1">PDF, DOC, DOCX до 50 МБ</p>
+            <p id="contractFileName" class="text-sm text-slate-700 mt-3 font-medium hidden"></p>
+          </div>
+          <p class="form-hint">Договор с исполнителем работ</p>
+        </div>
+      </div>
+
+      <!-- Наблюдатели -->
+      <div class="card-static p-6 mb-6">
+        <h2 class="font-semibold text-slate-800 mb-5">Наблюдатели</h2>
+        <p class="text-sm text-slate-500 mb-4">Сотрудники, которые будут видеть изыскание, но не смогут редактировать</p>
+        
+        <div class="space-y-3">
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+            <input type="checkbox" class="w-4 h-4 text-slate-700 rounded" id="observer1">
+            <div class="flex items-center gap-3 flex-1">
+              <div class="avatar bg-blue-100 text-blue-600">ПА</div>
+              <div class="flex-1">
+                <p class="text-sm font-medium text-slate-700">Петров А.И.</p>
+                <p class="text-xs text-slate-400">Архитектор</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+            <input type="checkbox" class="w-4 h-4 text-slate-700 rounded" id="observer2">
+            <div class="flex items-center gap-3 flex-1">
+              <div class="avatar bg-green-100 text-green-600">СК</div>
+              <div class="flex-1">
+                <p class="text-sm font-medium text-slate-700">Сидоров К.М.</p>
+                <p class="text-xs text-slate-400">Геодезист</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+            <input type="checkbox" class="w-4 h-4 text-slate-700 rounded" id="observer3">
+            <div class="flex items-center gap-3 flex-1">
+              <div class="avatar bg-amber-100 text-amber-600">КД</div>
+              <div class="flex-1">
+                <p class="text-sm font-medium text-slate-700">Козлов Д.В.</p>
+                <p class="text-xs text-slate-400">Конструктор</p>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Кнопки действий -->
+      <div class="flex gap-3 justify-end">
+        <a href="04-project-detail.html?id=1" class="btn-ghost">
+          Отмена
+        </a>
+        <button type="submit" class="btn-primary">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Создать изыскание
+        </button>
+      </div>
+    </form>
+  </main>
+
+  
+  <!-- API Scripts -->
+  <script src="/js/api-config.js"></script>
+  <script src="/js/api-client.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/ui-helpers.js"></script>
+  <script src="/js/mock-data.js"></script>
+  <script src="/js/shared.js"></script>
+  <script src="/js/pages/survey-create.js"></script>
+</body>
+</html>
