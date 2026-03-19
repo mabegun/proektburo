@@ -160,7 +160,11 @@ const API = {
     getExpenseCategories: () => api.get('/dictionaries/expense-categories'),
     getContractorTypes: () => api.get('/dictionaries/contractor-types'),
     getProjectStatuses: () => api.get('/dictionaries/project-statuses'),
+    getProjectTypes: () => api.get('/dictionaries/project-types'),
     getTaskPriorities: () => api.get('/dictionaries/task-priorities'),
+    getDepartments: () => api.get('/dictionaries/departments'),
+    getRoles: () => api.get('/dictionaries/roles'),
+    getPositions: () => api.get('/dictionaries/positions'),
   },
 
   // ==================== Поиск ====================

@@ -92,21 +92,21 @@ async function initPage(options = {}) {
  */
 function updateUserProfile(user) {
   if (!user) return;
-  
+
   // Обновляем имя пользователя
   const nameEl = document.getElementById('user-name');
   if (nameEl) nameEl.textContent = user.name;
-  
+
   // Обновляем роль
   const roleEl = document.getElementById('user-role');
   if (roleEl) roleEl.textContent = getRoleText(user.role);
-  
+
   // Обновляем приветствие (если есть)
   const welcomeEl = document.getElementById('welcome-name');
   if (welcomeEl) welcomeEl.textContent = user.name;
-  
-  // Обновляем аватар (если есть элемент с классом avatar)
-  const avatarEl = document.querySelector('.avatar');
+
+  // Обновляем аватар по ID или классу
+  const avatarEl = document.getElementById('user-avatar') || document.querySelector('.avatar');
   if (avatarEl && user.name) {
     const initials = user.name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
     avatarEl.textContent = initials;

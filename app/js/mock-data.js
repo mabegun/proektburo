@@ -193,10 +193,43 @@ const MOCK_DATA = {
       { id: 5, code: 'employee', name: 'Сотрудник — Штатный работник', shortName: 'ШТ', description: 'Штатный сотрудник организации. Выплата через зарплату/аванс.', requiredDocuments: [], optionalDocuments: [], active: true },
     ],
     projectStatuses: [
-      { value: 'not-started', label: 'Не начат' },
-      { value: 'in-progress', label: 'В работе' },
-      { value: 'review', label: 'На согласовании' },
-      { value: 'completed', label: 'Завершён' },
+      { code: 'not-started', name: 'Не начат' },
+      { code: 'in-progress', name: 'В работе' },
+      { code: 'review', name: 'На согласовании' },
+      { code: 'completed', name: 'Завершён' },
+    ],
+    projectTypes: [
+      { code: 'new-construction', name: 'Новое строительство' },
+      { code: 'reconstruction', name: 'Реконструкция' },
+      { code: 'renovation', name: 'Капитальный ремонт' },
+      { code: 'modernization', name: 'Техническое перевооружение' },
+    ],
+    departments: [
+      { code: 'management', name: 'Руководство' },
+      { code: 'architecture', name: 'Архитектурный' },
+      { code: 'structural', name: 'Конструктивный' },
+      { code: 'engineering', name: 'Инженерный (ОВ, ВК, ЭОМ)' },
+      { code: 'estimating', name: 'Сметный' },
+      { code: 'accounting', name: 'Бухгалтерия' },
+    ],
+    roles: [
+      { code: 'director', name: 'Директор' },
+      { code: 'gip', name: 'ГИП' },
+      { code: 'engineer', name: 'Инженер' },
+      { code: 'architect', name: 'Архитектор' },
+      { code: 'constructor', name: 'Конструктор' },
+      { code: 'accountant', name: 'Бухгалтер' },
+    ],
+    positions: [
+      { code: 'director', name: 'Директор' },
+      { code: 'gip', name: 'ГИП' },
+      { code: 'architect', name: 'Архитектор' },
+      { code: 'engineer-gp', name: 'Инженер ГП' },
+      { code: 'engineer-ov', name: 'Инженер ОВ' },
+      { code: 'engineer-vk', name: 'Инженер ВК' },
+      { code: 'engineer-eom', name: 'Инженер ЭОМ' },
+      { code: 'constructor', name: 'Конструктор' },
+      { code: 'accountant', name: 'Бухгалтер' },
     ],
     priorities: [
       { value: 'critical', label: 'Критичный' },
@@ -263,7 +296,11 @@ MOCK_DATA.getMockResponse = function(endpoint) {
   if (endpoint === '/dictionaries/expense-categories') return this.dictionaries.expenseCategories;
   if (endpoint === '/dictionaries/contractor-types') return this.dictionaries.contractorTypes;
   if (endpoint === '/dictionaries/project-statuses') return this.dictionaries.projectStatuses;
+  if (endpoint === '/dictionaries/project-types') return this.dictionaries.projectTypes;
   if (endpoint === '/dictionaries/task-priorities') return this.dictionaries.priorities;
+  if (endpoint === '/dictionaries/departments') return this.dictionaries.departments;
+  if (endpoint === '/dictionaries/roles') return this.dictionaries.roles;
+  if (endpoint === '/dictionaries/positions') return this.dictionaries.positions;
 
   // Auth
   if (endpoint === '/user/profile') return this.currentUser;
@@ -301,12 +338,71 @@ MOCK_DATA.handlePost = function(endpoint, data) {
       user: this.currentUser
     };
   }
-  
+
   // Logout
   if (endpoint === '/auth/logout') {
     return { success: true };
   }
-  
+
+  // Create project
+  if (endpoint === '/projects') {
+    const newProject = {
+      id: this.projects.length + 1,
+      code: data.code || `2025-${String(this.projects.length + 1).padStart(3, '0')}`,
+      name: data.name,
+      address: data.address || '',
+      type: data.type || 'new-construction',
+      status: data.status || 'not-started',
+      customer: data.customer || '',
+      startDate: data.startDate || null,
+      deadline: data.deadline || null,
+      area: data.area || 0,
+      floors: data.floors || 0,
+      description: data.description || '',
+      progress: 0,
+      sections: [],
+      surveys: [],
+      team: [],
+      files: [],
+    };
+    this.projects.push(newProject);
+    return newProject;
+  }
+
+  // Create task
+  if (endpoint === '/tasks') {
+    const newTask = {
+      id: this.tasks.length + 1,
+      title: data.title,
+      project: data.projectName || '',
+      priority: data.priority || 'medium',
+      status: 'pending',
+      deadline: data.deadline || null,
+      assignee: data.assigneeName || '',
+    };
+    this.tasks.push(newTask);
+    return newTask;
+  }
+
+  // Create employee
+  if (endpoint === '/employees') {
+    const newEmployee = {
+      id: this.employees.length + 1,
+      name: data.name,
+      email: data.email,
+      role: data.role || 'engineer',
+      position: data.position || '',
+      department: data.department || '',
+      phone: data.phone || '',
+      active: true,
+      contractorType: data.contractorType || 'employee',
+      projectsCount: 0,
+      payments: { paid: 0, total: 0, progress: 0 },
+    };
+    this.employees.push(newEmployee);
+    return newEmployee;
+  }
+
   console.warn(`Mock POST not found for: ${endpoint}`);
   return { success: false, message: 'Not implemented' };
 };

@@ -15,6 +15,7 @@
 
     .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
     .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     .btn-secondary { background: white; color: #475569; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; text-decoration: none; }
     .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
@@ -47,10 +48,10 @@
   <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
     <div class="p-5">
       <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
-        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
+        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white" id="user-avatar">И</div>
         <div class="flex-1 min-w-0">
-          <p class="font-semibold text-slate-800 truncate">Иванов П.С.</p>
-          <p class="text-xs text-slate-500">Директор</p>
+          <p class="font-semibold text-slate-800 truncate" id="user-name">Иванов П.С.</p>
+          <p class="text-xs text-slate-500" id="user-role">Директор</p>
         </div>
       </div>
     </div>
@@ -119,37 +120,28 @@
 
     <div class="max-w-2xl">
       <div class="card-static p-6">
-        <form class="space-y-6">
+        <form id="task-form" class="space-y-6">
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-2">Название задачи *</label>
-            <input type="text" class="input-field" placeholder="Введите название задачи">
+            <input type="text" name="title" id="task-title" class="input-field" placeholder="Введите название задачи" required>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-2">Описание</label>
-            <textarea class="input-field" rows="3" placeholder="Опишите задачу подробнее..."></textarea>
+            <textarea name="description" id="task-description" class="input-field" rows="3" placeholder="Опишите задачу подробнее..."></textarea>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">Проект *</label>
-              <select class="input-field">
-                <option>Выберите проект</option>
-                <option>ЖК "Северное сияние"</option>
-                <option>Реконструкция адм. здания</option>
-                <option>Кап. ремонт школы №15</option>
+              <select name="project" id="project-select" class="input-field" required>
+                <option value="">Загрузка...</option>
               </select>
             </div>
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">Раздел</label>
-              <select class="input-field">
-                <option>Без раздела</option>
-                <option>АР - Архитектурные решения</option>
-                <option>ГП - Генеральный план</option>
-                <option>КР - Конструктивные решения</option>
-                <option>ОВ - Отопление и вентиляция</option>
-                <option>ВК - Водоснабжение и канализация</option>
-                <option>ЭОМ - Электроснабжение</option>
+              <select name="section" id="section-select" class="input-field">
+                <option value="">Без раздела</option>
               </select>
             </div>
           </div>
@@ -157,29 +149,25 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">Исполнитель *</label>
-              <select class="input-field">
-                <option>Выберите исполнителя</option>
-                <option>Иванов П.С. (ГИП)</option>
-                <option>Петров А.И. (Архитектор)</option>
-                <option>Сидоров К.М. (Инженер ГП)</option>
-                <option>Козлов Д.В. (Конструктор)</option>
+              <select name="assignee" id="assignee-select" class="input-field" required>
+                <option value="">Загрузка...</option>
               </select>
             </div>
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">Срок выполнения *</label>
-              <input type="date" class="input-field">
+              <input type="date" name="due-date" id="due-date" class="input-field" required>
             </div>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-2">Приоритет</label>
-            <div class="grid grid-cols-4 gap-3">
+            <div class="grid grid-cols-4 gap-3" id="priority-container">
               <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer has-[:checked]:bg-slate-100 has-[:checked]:border-slate-400">
                 <input type="radio" name="priority" value="low" class="sr-only">
                 <span class="badge priority-low">Низкий</span>
               </label>
               <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer has-[:checked]:bg-slate-100 has-[:checked]:border-slate-400">
-                <input type="radio" name="priority" value="medium" class="sr-only">
+                <input type="radio" name="priority" value="medium" class="sr-only" checked>
                 <span class="badge priority-medium">Средний</span>
               </label>
               <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer has-[:checked]:bg-slate-100 has-[:checked]:border-slate-400">
@@ -195,7 +183,7 @@
 
           <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
             <a href="07-tasks-list.html" class="btn-secondary">Отмена</a>
-            <button type="submit" class="btn-primary">Создать задачу</button>
+            <button type="submit" id="submit-btn" class="btn-primary">Создать задачу</button>
           </div>
         </form>
       </div>

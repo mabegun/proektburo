@@ -42,11 +42,13 @@ async function loadDictionaries() {
 function renderSectionCheckboxes(sections) {
   const container = document.getElementById('sections-list');
   if (!container) return;
-  
-  container.innerHTML = sections.map(section => `
+
+  const list = sections.items || sections;
+
+  container.innerHTML = list.filter(s => s.active !== false).map(section => `
     <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
       <input type="checkbox" name="sections" value="${section.code}" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-      <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style="background: ${section.color}">
+      <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style="background: ${section.color || '#64748b'}">
         ${section.code}
       </span>
       <span class="text-sm font-medium text-slate-700">${section.name}</span>
@@ -60,11 +62,13 @@ function renderSectionCheckboxes(sections) {
 function renderSurveyCheckboxes(surveys) {
   const container = document.getElementById('surveys-list');
   if (!container) return;
-  
-  container.innerHTML = surveys.map(survey => `
+
+  const list = surveys.items || surveys;
+
+  container.innerHTML = list.filter(s => s.active !== false).map(survey => `
     <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
       <input type="checkbox" name="surveys" value="${survey.code}" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-      <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style="background: ${survey.color}">
+      <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style="background: ${survey.color || '#64748b'}">
         ${survey.code}
       </span>
       <span class="text-sm font-medium text-slate-700">${survey.name}</span>
@@ -78,12 +82,16 @@ function renderSurveyCheckboxes(surveys) {
 function renderGipSelect(employees) {
   const select = document.getElementById('project-gip');
   if (!select) return;
-  
+
+  // Если employees - это объект с items
+  const list = employees.items || employees;
+
   select.innerHTML = `
     <option value="">Выберите ГИПа</option>
-    ${employees.map(emp => `
+    ${list.filter(emp => emp.role === 'gip').map(emp => `
       <option value="${emp.id}">${emp.name}</option>
     `).join('')}
+    ${list.length === 0 ? '<option value="" disabled>Нет доступных ГИПов</option>' : ''}
   `;
 }
 
@@ -93,10 +101,12 @@ function renderGipSelect(employees) {
 function renderProjectTypeSelect(types) {
   const select = document.getElementById('project-type');
   if (!select) return;
-  
+
+  const list = types.items || types;
+
   select.innerHTML = `
     <option value="">Выберите тип</option>
-    ${types.map(type => `
+    ${list.map(type => `
       <option value="${type.code}">${type.name}</option>
     `).join('')}
   `;
@@ -108,8 +118,10 @@ function renderProjectTypeSelect(types) {
 function renderStatusSelect(statuses) {
   const select = document.getElementById('project-status');
   if (!select) return;
-  
-  select.innerHTML = statuses.map(status => `
+
+  const list = statuses.items || statuses;
+
+  select.innerHTML = list.map(status => `
     <option value="${status.code}">${status.name}</option>
   `).join('');
 }

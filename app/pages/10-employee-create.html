@@ -15,6 +15,7 @@
 
     .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
     .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     .btn-secondary { background: white; color: #475569; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; text-decoration: none; }
     .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
@@ -27,10 +28,6 @@
     .sidebar-item.active { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; }
 
     .badge { border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; display: inline-block; }
-    .status-not-started { background: #f1f5f9; color: #64748b; }
-    .status-in-progress { background: #dbeafe; color: #1d4ed8; }
-    .status-completed { background: #dcfce7; color: #16a34a; }
-    .status-revision { background: #fef3c7; color: #d97706; }
 
     .avatar { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
     .avatar-lg { width: 56px; height: 56px; font-size: 18px; }
@@ -42,10 +39,10 @@
   <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
     <div class="p-5">
       <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
-        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
+        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white" id="user-avatar">И</div>
         <div class="flex-1 min-w-0">
-          <p class="font-semibold text-slate-800 truncate">Иванов П.С.</p>
-          <p class="text-xs text-slate-500">Директор</p>
+          <p class="font-semibold text-slate-800 truncate" id="user-name">Иванов П.С.</p>
+          <p class="text-xs text-slate-500" id="user-role">Директор</p>
         </div>
       </div>
     </div>
@@ -114,34 +111,16 @@
 
     <div class="max-w-2xl">
       <div class="card-static p-6">
-        <form class="space-y-6">
+        <form id="employee-form" class="space-y-6">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">Фамилия *</label>
-              <input type="text" class="input-field" placeholder="Иванов">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">Имя *</label>
-              <input type="text" class="input-field" placeholder="Пётр">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">Отчество</label>
-              <input type="text" class="input-field" placeholder="Сергеевич">
+              <label class="block text-sm font-medium text-slate-700 mb-2">ФИО *</label>
+              <input type="text" name="name" id="employee-name" class="input-field" placeholder="Иванов Пётр Сергеевич" required>
             </div>
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">Должность *</label>
-              <select class="input-field">
-                <option>Выберите должность</option>
-                <option>ГИП</option>
-                <option>Архитектор</option>
-                <option>Инженер ГП</option>
-                <option>Инженер ОВ</option>
-                <option>Инженер ВК</option>
-                <option>Инженер ЭОМ</option>
-                <option>Конструктор</option>
+              <select name="position" id="position-select" class="input-field" required>
+                <option value="">Загрузка...</option>
               </select>
             </div>
           </div>
@@ -149,48 +128,45 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">Email *</label>
-              <input type="email" class="input-field" placeholder="ivanov@prokb.ru">
+              <input type="email" name="email" id="employee-email" class="input-field" placeholder="ivanov@prokb.ru" required>
             </div>
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-2">Телефон</label>
-              <input type="tel" class="input-field" placeholder="+7 (495) 123-45-67">
+              <input type="tel" name="phone" id="employee-phone" class="input-field" placeholder="+7 (495) 123-45-67">
             </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Отдел</label>
-            <select class="input-field">
-              <option>Выберите отдел</option>
-              <option>Архитектурный</option>
-              <option>Конструктивный</option>
-              <option>Инженерный (ОВ, ВК, ЭОМ)</option>
-              <option>Сметный</option>
-            </select>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Отдел</label>
+              <select name="department" id="department-select" class="input-field">
+                <option value="">Загрузка...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Роль</label>
+              <select name="role" id="role-select" class="input-field">
+                <option value="">Загрузка...</option>
+              </select>
+            </div>
           </div>
 
           <!-- Финансовые настройки -->
           <div class="pt-4 border-t border-slate-100">
             <h3 class="text-sm font-medium text-slate-700 mb-4">Финансовые настройки</h3>
-            
+
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-2">Тип контрагента по умолчанию</label>
-              <select class="input-field">
-                <option value="employee">Сотрудник — штатный работник</option>
-                <option value="ip">ИП — индивидуальный предприниматель</option>
-                <option value="self_employed">Самозанятый — налогоплательщик НПД</option>
-                <option value="individual">Физлицо — договор ГПХ</option>
-                <option value="ooo">ООО — организация</option>
+              <label class="block text-sm font-medium text-slate-700 mb-2">Тип контрагента</label>
+              <select name="contractorType" id="contractor-type-select" class="input-field">
+                <option value="">Загрузка...</option>
               </select>
-              <p class="text-xs text-slate-400 mt-2">
-                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Определяет набор документов, который нужно загрузить для получения выплаты. Для штатных сотрудников документы не требуются — выплата через зарплату.
-              </p>
+              <div id="contractor-hint" class="mt-3"></div>
             </div>
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
             <a href="09-employees-list.html" class="btn-secondary">Отмена</a>
-            <button type="submit" class="btn-primary">Добавить исполнителя</button>
+            <button type="submit" id="submit-btn" class="btn-primary">Добавить исполнителя</button>
           </div>
         </form>
       </div>
