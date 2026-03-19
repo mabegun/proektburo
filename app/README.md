@@ -1,91 +1,188 @@
-# App — Страницы, готовые к интеграции с API
+# Проектное бюро - Рабочая версия
 
-Эта папка содержит HTML страницы, подготовленные для работы с реальным API.
+Это рабочая версия приложения с полной интеграцией API. Статический прототип находится в корневой папке `../`.
 
 ## Структура
 
 ```
 app/
-├── pages/           # HTML страницы
-│   ├── 02-dashboard.html
-│   ├── 03-projects-list.html
-│   ├── 04-project-detail.html
-│   └── ...
+├── pages/           # HTML страницы (41 файл)
 ├── js/
-│   ├── data-binder.js    # Автоматическая привязка данных
-│   ├── api-client.js     # Клиент для API запросов
-│   └── config.js         # Конфигурация (BASE_URL и т.д.)
-└── README.md
+│   ├── api-config.js    # Конфигурация API
+│   ├── api-client.js    # HTTP клиент
+│   ├── api.js           # Методы API
+│   ├── ui-helpers.js    # UI утилиты
+│   ├── mock-data.js     # Моковые данные
+│   ├── shared.js        # Общие функции
+│   ├── components/      # UI компоненты
+│   └── pages/           # Скрипты страниц
+├── backend/          # FastAPI бэкенд
+│   ├── main.py           # API endpoints
+│   ├── database.py       # SQLite БД
+│   ├── crud.py           # CRUD операции
+│   ├── auth.py           # Авторизация
+│   └── schemas.py        # Pydantic схемы
+├── data/             # База данных и файлы
+├── docs/             # Документация
+├── run.sh            # Запуск (Linux/macOS)
+├── run.bat           # Запуск (Windows)
+└── requirements.txt  # Python зависимости
 ```
 
-## Data-атрибуты
+## Быстрый старт
 
-Все элементы, которые должны получать данные из API, размечены data-атрибутами:
+### Linux/macOS
+```bash
+cd app
+chmod +x run.sh   # один раз
+./run.sh
+```
 
-| Атрибут | Описание | Пример |
-|---------|----------|--------|
-| `data-api` | API endpoint для загрузки | `data-api="projects.list"` |
-| `data-value` | Поле из ответа API | `data-value="name"` |
-| `data-container` | Контейнер для списка | `data-container="projects"` |
-| `data-template` | Шаблон элемента списка | `data-template="project-card"` |
-| `data-link` | Ссылка с подстановкой ID | `data-link="04-project-detail.html?id={id}"` |
-| `data-format` | Функция форматирования | `data-format="date"`, `data-format="money"` |
-| `data-enum` | Enum для маппинга статуса | `data-enum="ProjectStatus"` |
-| `data-class-map` | Маппинг значения в CSS класс | `data-class-map="status:done,in-progress"` |
-| `data-default` | Значение по умолчанию | `data-default="0"` |
+### Windows
+```cmd
+cd app
+run.bat
+```
 
-## Использование
+Скрипт автоматически:
+1. Создаст виртуальное окружение `venv/`
+2. Установит зависимости
+3. Инициализирует базу данных
+4. Создаст тестовые данные
+5. Запустит сервер на http://localhost:8000
 
+### Ручной запуск
+
+```bash
+cd app
+
+# Создание виртуального окружения
+python3 -m venv venv
+source venv/bin/activate  # Linux/macOS
+# venv\Scripts\activate   # Windows
+
+# Установка зависимостей
+pip install -r requirements.txt
+
+# Инициализация БД и тестовых данных
+python init_test_data.py
+
+# Запуск сервера
+uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+## Тестовые пользователи
+
+| Email | Роль | Пароль |
+|-------|------|--------|
+| director@bureau.ru | Директор | Любой |
+| gip-ivanov@bureau.ru | ГИП | Любой |
+| executor-petrov@bureau.ru | Исполнитель | Любой |
+| executor-sidorov@bureau.ru | Исполнитель | Любой |
+| observer-kuznetsov@bureau.ru | Наблюдатель | Любой |
+
+**Примечание:** Авторизация по email без пароля (для разработки).
+
+## API Endpoints
+
+### Авторизация
+- `POST /api/auth/login` - Вход
+- `POST /api/auth/logout` - Выход
+- `GET /api/user/profile` - Профиль
+
+### Проекты
+- `GET /api/projects` - Список
+- `POST /api/projects` - Создать
+- `GET /api/projects/{id}` - Детали
+- `PUT /api/projects/{id}` - Обновить
+
+### Разделы и изыскания
+- `POST /api/projects/{id}/sections` - Создать раздел
+- `GET /api/sections/{id}` - Детали раздела
+- `POST /api/projects/{id}/surveys` - Создать изыскание
+- `GET /api/surveys/{id}` - Детали изыскания
+
+### Остальное
+- `GET /api/tasks` - Задачи
+- `GET /api/employees` - Сотрудники
+- `GET /api/dashboard/stats` - Статистика
+- `GET /api/dictionaries/*` - Справочники
+
+Полная документация: http://localhost:8000/docs
+
+## Режимы работы
+
+### С API (Production Mode)
 ```javascript
-// Загрузка данных
-const stats = await API.get('/api/dashboard/stats');
-DataBinder.bind(document.getElementById('stats-container'), stats);
-
-// Рендер списка
-const projects = await API.get('/api/projects');
-DataBinder.renderList(
-  document.getElementById('projects-list'),
-  projects.items,
-  'project-card'
-);
+// js/api-config.js
+CONFIG.DEMO_MODE = false;
+CONFIG.BASE_URL = 'http://localhost:8000/api';
 ```
 
-## Форматтеры
+### Demo Mode (без API)
+```javascript
+// js/api-config.js
+CONFIG.DEMO_MODE = true;
+```
 
-| Название | Вход | Выход |
-|----------|------|-------|
-| `date` | `"2025-06-30"` | `"30.06.2025"` |
-| `datetime` | `"2025-06-30T10:00:00Z"` | `"30.06.2025 10:00"` |
-| `relative-time` | `"2025-03-16T10:00:00Z"` | `"2 часа назад"` |
-| `money` | `150000` | `"150 000 ₽"` |
-| `number` | `1234567` | `"1 234 567"` |
-| `percent` | `33` | `"33%"` |
-| `deadline` | `"2025-06-30"` | `"📅 до 30.06.2025"` |
-| `initials` | `"Иванов Петр"` | `"ИП"` |
+## Статический прототип
 
-## Enum-маппинги
+Для визуальной разработки используйте HTML файлы в корневой папке:
+- `../01-login.html`
+- `../02-dashboard.html`
+- и т.д.
 
-### ProjectStatus
-- `draft` → Черновик, `status-draft`
-- `in_progress` → В работе, `status-in-progress`
-- `on_approval` → На согласовании, `status-on-approval`
-- `completed` → Завершён, `status-completed`
+Они содержат захардкоженные данные и не требуют запуска сервера.
 
-### SectionStatus
-- `not_started` → Не начат, `section-not-started`
-- `in_progress` → В работе, `section-in-progress`
-- `on_approval` → На согласовании, `section-review`
-- `approved` → Согласован, `section-done`
-- `overdue` → Просрочен, `section-overdue`
+## Технологии
 
-### Priority
-- `critical` → Критичный, `priority-critical`
-- `high` → Высокий, `priority-high`
-- `medium` → Средний, `priority-medium`
-- `low` → Низкий, `priority-low`
+**Frontend:**
+- HTML5 + Tailwind CSS
+- Vanilla JavaScript (ES6+)
+- Fetch API
 
-## Запуск
+**Backend:**
+- FastAPI (Python 3.9+)
+- SQLite
+- Pydantic
 
-1. Настроить `app/js/config.js` — указать `BASE_URL` API
-2. Открыть `app/pages/02-dashboard.html` в браузере
-3. Данные загрузятся автоматически при наличии API
+## Разработка
+
+### Добавление нового API endpoint
+
+1. Добавить схему в `backend/schemas.py`
+2. Добавить CRUD функцию в `backend/crud.py`
+3. Добавить роут в `backend/main.py`
+4. Добавить метод в `js/api.js`
+5. Создать JS скрипт страницы в `js/pages/`
+
+### Адаптация новой страницы
+
+1. Скопировать HTML из прототипа в `pages/`
+2. Добавить ID элементам для динамического обновления
+3. Заменить хардкод на placeholder'ы
+4. Подключить JS скрипты перед `</body>`
+5. Создать/обновить JS скрипт в `js/pages/`
+
+## База данных
+
+### Таблицы (13):
+- users - Пользователи
+- projects - Проекты
+- sections - Разделы
+- surveys - Изыскания
+- files - Файлы
+- chat_messages - Чат
+- tasks - Задачи
+- history - История
+- project_members - Команда
+- section_observers - Наблюдатели разделов
+- survey_observers - Наблюдатели изысканий
+- section_types - Справочник разделов
+- survey_types - Справочник изысканий
+
+### Сброс БД
+```bash
+rm data/database.sqlite
+python init_test_data.py
+```

@@ -4,15 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Вход - Проектное бюро</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
-    body { 
-      font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-      margin: 0; 
-      background: #f8fafc; 
-    }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; background: #f8fafc; }
 
     .card {
       background: white;
@@ -32,14 +27,10 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .btn-primary:hover:not(:disabled) {
+    .btn-primary:hover {
       background: linear-gradient(135deg, #334155 0%, #475569 100%);
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(30, 41, 59, 0.3);
-    }
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
     }
 
     .input-field {
@@ -56,46 +47,11 @@
       border-color: #94a3b8;
       box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15);
     }
-    .input-field.error {
-      border-color: #ef4444;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
-    }
-
-    .error-message {
-      color: #ef4444;
-      font-size: 14px;
-      padding: 12px 16px;
-      background: #fef2f2;
-      border-radius: 12px;
-      border: 1px solid #fecaca;
-      display: none;
-    }
-    .error-message.visible {
-      display: block;
-    }
-
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: none;
-    }
-    .spinner.visible {
-      display: inline-block;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
 
   <div class="card w-full max-w-md p-8">
-    <!-- Header -->
     <div class="text-center mb-8">
       <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-600 text-white flex items-center justify-center mx-auto mb-4">
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,193 +62,38 @@
       <p class="text-slate-500 mt-2">Система управления проектами</p>
     </div>
 
-    <!-- Login Form -->
-    <form 
-      id="login-form" 
-      data-api="/auth/login"
-      class="space-y-5"
-    >
-      <!-- Email Field -->
+    <form id="login-form" class="space-y-5">
       <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2" for="email">
-          Email
-        </label>
-        <input 
-          type="email" 
-          id="email"
-          name="email"
-          class="input-field" 
-          placeholder="email@prokb.ru"
-          data-value="email"
-          required
-          autocomplete="email"
-        >
+        <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+        <input type="email" class="input-field" placeholder="email@prokb.ru" id="email" required>
       </div>
-
-      <!-- Password Field -->
       <div>
-        <label class="block text-sm font-medium text-slate-700 mb-2" for="password">
-          Пароль
-        </label>
-        <input 
-          type="password" 
-          id="password"
-          name="password"
-          class="input-field" 
-          placeholder="••••••••"
-          data-value="password"
-          required
-          minlength="4"
-          autocomplete="current-password"
-        >
+        <label class="block text-sm font-medium text-slate-700 mb-2">Пароль</label>
+        <input type="password" class="input-field" placeholder="••••••••" id="password" required minlength="4">
       </div>
-
-      <!-- Error Message -->
-      <div id="error-message" class="error-message" role="alert">
-        <span data-value="error">Неверный email или пароль</span>
-      </div>
-
-      <!-- Submit Button -->
-      <button 
-        type="submit" 
-        id="submit-btn" 
-        class="btn-primary w-full flex items-center justify-center gap-2"
-      >
-        <span class="spinner" id="spinner"></span>
-        <span id="btn-text">Войти</span>
+      <p id="error" class="text-red-500 text-sm hidden">Неверный email или пароль</p>
+      <button type="submit" id="submit-btn" class="btn-primary w-full text-center block">
+        Войти
       </button>
     </form>
+
+    <div class="mt-8 pt-6 border-t border-slate-100">
+      <p class="text-xs text-slate-400 text-center mb-3">Демо-доступы (любой пароль от 4 символов):</p>
+      <div class="text-xs text-slate-500 text-center space-y-1 bg-slate-50 rounded-xl p-3">
+        <p><span class="font-medium">Директор:</span> ivanov@prokb.ru</p>
+        <p><span class="font-medium">ГИП:</span> sidorova@prokb.ru</p>
+        <p><span class="font-medium">Сотрудник:</span> petrov@prokb.ru</p>
+      </div>
+    </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="../js/config.js"></script>
+  <!-- API Scripts -->
+  <script src="../js/api-config.js"></script>
   <script src="../js/api-client.js"></script>
-  <script src="../js/data-binder.js"></script>
-  
-  <!-- Page Logic -->
-  <script>
-    (function() {
-      'use strict';
-
-      const form = document.getElementById('login-form');
-      const emailInput = document.getElementById('email');
-      const passwordInput = document.getElementById('password');
-      const submitBtn = document.getElementById('submit-btn');
-      const btnText = document.getElementById('btn-text');
-      const spinner = document.getElementById('spinner');
-      const errorMessage = document.getElementById('error-message');
-
-      /**
-       * Показать ошибку
-       */
-      function showError(message) {
-        errorMessage.querySelector('[data-value="error"]').textContent = message || 'Неверный email или пароль';
-        errorMessage.classList.add('visible');
-        emailInput.classList.add('error');
-        passwordInput.classList.add('error');
-      }
-
-      /**
-       * Скрыть ошибку
-       */
-      function hideError() {
-        errorMessage.classList.remove('visible');
-        emailInput.classList.remove('error');
-        passwordInput.classList.remove('error');
-      }
-
-      /**
-       * Установить состояние загрузки
-       */
-      function setLoading(isLoading) {
-        submitBtn.disabled = isLoading;
-        spinner.classList.toggle('visible', isLoading);
-        btnText.textContent = isLoading ? 'Вход...' : 'Войти';
-      }
-
-      /**
-       * Сохранить токен и данные пользователя
-       */
-      function saveAuthData(data) {
-        if (data.token) {
-          localStorage.setItem(CONFIG.TOKEN_KEY, data.token);
-        }
-        if (data.user) {
-          localStorage.setItem('currentUser', JSON.stringify(data.user));
-        }
-      }
-
-      /**
-       * Редирект на dashboard
-       */
-      function redirectToDashboard() {
-        window.location.href = '02-dashboard.html';
-      }
-
-      // Очистка ошибки при вводе
-      emailInput.addEventListener('input', hideError);
-      passwordInput.addEventListener('input', hideError);
-
-      // Обработка формы
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        hideError();
-
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-
-        // Валидация
-        if (!email) {
-          showError('Введите email');
-          emailInput.focus();
-          return;
-        }
-
-        if (!password || password.length < 4) {
-          showError('Пароль должен содержать минимум 4 символа');
-          passwordInput.focus();
-          return;
-        }
-
-        setLoading(true);
-
-        try {
-          // Вызов API
-          const response = await API.auth.login(email, password);
-
-          // Сохраняем данные авторизации
-          saveAuthData(response);
-
-          // Редирект на dashboard
-          redirectToDashboard();
-
-        } catch (error) {
-          console.error('[Login] Error:', error);
-          
-          // Показываем ошибку
-          if (error.status === 401) {
-            showError('Неверный email или пароль');
-          } else if (error.status === 400) {
-            showError('Проверьте правильность введённых данных');
-          } else if (error.message) {
-            showError(error.message);
-          } else {
-            showError('Ошибка авторизации. Попробуйте позже.');
-          }
-        } finally {
-          setLoading(false);
-        }
-      });
-
-      // Проверка, если пользователь уже авторизован
-      const existingToken = localStorage.getItem(CONFIG.TOKEN_KEY);
-      if (existingToken) {
-        // Можно проверить валидность токена через API
-        // или сразу редиректнуть
-        // redirectToDashboard();
-      }
-
-    })();
-  </script>
+  <script src="../js/api.js"></script>
+  <script src="../js/ui-helpers.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/pages/login.js"></script>
 </body>
 </html>

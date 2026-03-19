@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Финансы - ЖК "Северное сияние" - Проектное бюро</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f8fafc; }
+
+    .card-static { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+
+    .btn-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+    .btn-primary:hover { background: linear-gradient(135deg, #334155 0%, #475569 100%); transform: translateY(-1px); }
+
+    .btn-secondary { background: white; color: #475569; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; text-decoration: none; }
+    .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .btn-success { background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%); color: white; border-radius: 12px; padding: 10px 20px; font-weight: 500; transition: all 0.2s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+
+    .input-field { border-radius: 12px; border: 1px solid #e2e8f0; padding: 12px 16px; transition: all 0.2s ease; background: white; width: 100%; font-size: 14px; }
+    .input-field:focus { outline: none; border-color: #94a3b8; box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.15); }
+
+    .sidebar-item { border-radius: 12px; padding: 12px 16px; transition: all 0.2s ease; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: transparent; border: none; font-size: 14px; color: #475569; text-decoration: none; }
+    .sidebar-item:hover { background: #f1f5f9; }
+    .sidebar-item.active { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; }
+
+    .badge { border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; display: inline-block; }
+    .badge-small { padding: 2px 8px; font-size: 11px; }
+    .status-in-progress { background: #dbeafe; color: #1d4ed8; }
+
+    .avatar { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+
+    .tab-item { padding: 12px 20px; font-size: 14px; font-weight: 500; color: #64748b; border-bottom: 2px solid transparent; transition: all 0.2s ease; text-decoration: none; display: flex; align-items: center; }
+    .tab-item:hover { color: #334155; background: #f8fafc; }
+    .tab-item.active { color: #1e293b; border-bottom-color: #1e293b; }
+
+    .status-created { background: #fef3c7; color: #d97706; }
+    .status-approved { background: #dbeafe; color: #1d4ed8; }
+    .status-paid { background: #f3e8ff; color: #9333ea; }
+    .status-closed { background: #dcfce7; color: #16a34a; }
+
+    .section-expense { border-left: 4px solid #dc2626; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; visibility: hidden; transition: all 0.2s ease; }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-content { background: white; border-radius: 20px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.2s ease; }
+    .modal-overlay.active .modal-content { transform: scale(1); }
+
+    .upload-zone { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 24px; text-align: center; transition: all 0.2s ease; cursor: pointer; }
+    .upload-zone:hover { border-color: #94a3b8; background: #f8fafc; }
+
+    .radio-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; cursor: pointer; transition: all 0.2s ease; }
+    .radio-card:hover { border-color: #cbd5e1; background: #f8fafc; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex">
+
+  <!-- Сайдбар -->
+  <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
+    <div class="p-5">
+      <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
+        <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white">П</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-slate-800 truncate">Петров А.И.</p>
+          <p class="text-xs text-slate-500">Архитектор</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-2">
+      <div class="mb-2 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Меню</div>
+
+      <a href="02-dashboard.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Дашборд
+      </a>
+
+      <a href="03-projects-list.html" class="sidebar-item active">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        Проекты
+      </a>
+
+      <a href="07-tasks-list.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+        Задачи
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">1</span>
+      </a>
+
+      <div class="mb-2 mt-4 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Система</div>
+
+      <a href="11-notifications.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        Уведомления
+        <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">2</span>
+      </a>
+
+      <a href="13-settings.html" class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Настройки
+      </a>
+    </nav>
+
+    <div class="p-3 border-t border-slate-100">
+      <a href="01-login.html" class="sidebar-item text-slate-500 hover:text-slate-700 hover:bg-slate-50">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        Выйти
+      </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 overflow-auto p-8">
+    <!-- Заголовок -->
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <a href="03-projects-list.html" class="text-slate-400 hover:text-slate-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          </a>
+          <h1 class="text-2xl font-bold text-slate-800">ЖК "Северное сияние"</h1>
+          <span class="text-slate-400 text-lg font-mono">2025-001</span>
+          <span class="badge status-in-progress">В работе</span>
+        </div>
+        <p class="text-slate-500">г. Москва, ул. Ленина, д. 45</p>
+      </div>
+      <div class="flex gap-3">
+        <button class="btn-secondary">Скачать проект</button>
+      </div>
+    </div>
+
+    <!-- Вкладки -->
+    <div class="border-b border-slate-200 mb-6">
+      <nav class="flex gap-1">
+        <a href="04-1-project-detail-employee.html" class="tab-item">
+          Обзор
+        </a>
+        <a href="04-1-project-discussion.html" class="tab-item">
+          Обсуждение
+          <span class="ml-1.5 bg-slate-100 text-slate-600 text-xs px-1.5 py-0.5 rounded-full">3</span>
+        </a>
+        <a href="04-2-project-expertise.html" class="tab-item">
+          Замечания
+          <span class="ml-1.5 bg-amber-100 text-amber-700 text-xs px-1.5 py-0.5 rounded-full">2</span>
+        </a>
+        <a href="04-3-project-history.html" class="tab-item">
+          История
+        </a>
+        <a href="04-5-project-finances-employee.html" class="tab-item active">
+          Финансы
+          <span class="ml-1.5 bg-slate-100 text-slate-600 text-xs px-1.5 py-0.5 rounded-full">4</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+      <!-- Основной контент -->
+      <div class="col-span-2 space-y-6">
+        <!-- Информационный блок -->
+        <div class="card-static p-6 bg-blue-50 border-blue-200">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium text-slate-800 mb-1">Ваши выплаты по проекту</p>
+              <p class="text-sm text-slate-600 leading-relaxed">
+                Здесь отображаются выплаты, созданные вами или руководителем. 
+                Для получения оплаты выставите счёт за работу или авансовый счёт.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Секция: Мои выплаты -->
+        <div class="card-static section-expense p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                </svg>
+              </div>
+              <div>
+                <h2 class="font-semibold text-slate-800">Мои выплаты</h2>
+                <p class="text-sm text-slate-500">Счета и выплаты по вашему участию в проекте</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-2xl font-bold text-red-500">-180 000 ₽</span>
+              <button class="btn-primary text-sm" id="openAddPayoutModal">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Выставить счёт
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <!-- Выплата: выплачена, нужны документы -->
+            <a href="19-payment-detail.html" class="block p-4 rounded-xl border border-purple-200 bg-purple-50/30 hover:border-purple-400 hover:bg-purple-50 transition-all">
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg font-bold text-slate-800">-50 000 ₽</span>
+                    <span class="badge badge-small status-paid">Выплачено</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">ИП</span>
+                  </div>
+                  <p class="text-slate-800 font-medium mb-1">Счёт за работу (АР, этап 2)</p>
+                  <div class="flex items-center gap-4 text-sm text-slate-500">
+                    <span>Выплачено: 18.03.2025</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Блок загрузки документов -->
+              <div class="mt-2 p-4 rounded-xl bg-white border border-purple-100" onclick="event.preventDefault()">
+                <div class="flex items-center justify-between mb-3">
+                  <p class="text-sm font-medium text-slate-700">📋 Документы</p>
+                  <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1">
+                      <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                      <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                      <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                      <div class="w-2 h-2 rounded-full bg-slate-300"></div>
+                    </div>
+                    <span class="text-sm font-semibold text-amber-600">2 из 4</span>
+                  </div>
+                </div>
+                
+                <!-- Прогресс-бар -->
+                <div class="w-full h-2 bg-slate-100 rounded-full mb-4 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full" style="width: 50%"></div>
+                </div>
+                
+                <!-- Список документов -->
+                <div class="space-y-2 text-sm mb-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                      <span class="text-slate-700">Договор</span>
+                    </div>
+                    <span class="text-xs text-slate-400">✓</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                      <span class="text-slate-700">Акт выполненных работ</span>
+                    </div>
+                    <span class="text-xs text-slate-400">✓</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <span class="text-amber-700 font-medium">Счёт на оплату</span>
+                    </div>
+                    <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-700 font-medium">⚠️ Требуется</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <span class="text-slate-400">Платёжное поручение</span>
+                    </div>
+                    <span class="text-xs text-slate-400">Бухгалтерия</span>
+                  </div>
+                </div>
+                
+                <!-- Явная кнопка загрузки -->
+                <button class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium flex items-center justify-center gap-2 hover:from-blue-600 hover:to-blue-700 transition-all">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                  📎 Загрузить счёт на оплату
+                </button>
+                
+                <!-- Подсказка -->
+                <div class="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-100">
+                  <p class="text-xs text-amber-700">
+                    💡 <strong>Загрузите счёт сейчас</strong> — получите выплату быстрее! Без счёта выплата задержится на 2-3 дня.
+                  </p>
+                </div>
+              </div>
+            </a>
+
+            <!-- Выплата: согласована -->
+            <a href="19-payment-detail.html" class="block p-4 rounded-xl border border-blue-200 bg-blue-50/30 hover:border-blue-400 hover:bg-blue-50 transition-all">
+              <div class="flex items-start justify-between gap-4 mb-3">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg font-bold text-slate-800">-30 000 ₽</span>
+                    <span class="badge badge-small status-approved">Согласовано</span>
+                  </div>
+                  <p class="text-slate-800 font-medium mb-1">Счёт за работу (ГП, этап 1)</p>
+                  <div class="flex items-center gap-4 text-sm text-slate-500">
+                    <span>Ожидает выплаты</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2" onclick="event.preventDefault()">
+                  <button class="btn-secondary text-sm py-2 px-3" title="Редактировать">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                  </button>
+                </div>
+              </div>
+              <!-- Индикатор документов -->
+              <div class="flex items-center justify-between p-2 rounded-lg bg-white/70">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  <span class="text-sm text-slate-600">Документы</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">Ожидает загрузки</span>
+                </div>
+              </div>
+            </a>
+
+            <!-- Выплата: создана (создал руководитель) -->
+            <a href="19-payment-detail.html" class="block p-4 rounded-xl border border-amber-200 bg-amber-50/50 hover:border-amber-400 hover:bg-amber-50 transition-all">
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg font-bold text-slate-800">-20 000 ₽</span>
+                    <span class="badge badge-small status-created">Создано</span>
+                  </div>
+                  <p class="text-slate-800 font-medium mb-1">Авансовый счёт (материалы)</p>
+                  <div class="flex items-center gap-4 text-sm text-slate-500">
+                    <span>Создано: Иванов П.С. (ГИП)</span>
+                  </div>
+                </div>
+                <span class="text-xs text-slate-400">Ожидает согласования</span>
+              </div>
+            </a>
+
+            <!-- Выплата: закрыта -->
+            <a href="19-payment-detail.html" class="block p-4 rounded-xl border border-green-200 bg-green-50/30 hover:border-green-400 hover:bg-green-50 transition-all">
+              <div class="flex items-start justify-between gap-4 mb-3">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg font-bold text-slate-800">-80 000 ₽</span>
+                    <span class="badge badge-small status-closed">Закрыто</span>
+                  </div>
+                  <p class="text-slate-800 font-medium mb-1">Счёт за работу (АР, этап 1)</p>
+                  <div class="flex items-center gap-4 text-sm text-slate-500">
+                    <span>Выплачено: 01.02.2025</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Индикатор документов -->
+              <div class="flex items-center justify-between p-2 rounded-lg bg-white/70">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                  <span class="text-sm text-slate-600">Документы</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                  </div>
+                  <span class="text-sm font-medium text-green-600">4 из 4 ✓</span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <p class="text-xs text-slate-400 mt-4 pt-3 border-t border-slate-100">
+            Счета со статусом «Создано» или «Согласовано» можно редактировать. После выплаты — только просмотр.
+          </p>
+        </div>
+      </div>
+
+      <!-- Боковая панель -->
+      <div class="space-y-6">
+        <!-- Мой баланс -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-4">Мои выплаты</h2>
+          <p class="text-3xl font-bold text-slate-800 mb-4">180 000 ₽</p>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-slate-500">К получению</span>
+              <span class="text-sm font-semibold text-amber-600">80 000 ₽</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-slate-500">Получено</span>
+              <span class="text-sm font-semibold text-green-600">100 000 ₽</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- По статусам -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-4">По статусам</h2>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                <span class="text-slate-600">Ожидает</span>
+              </div>
+              <span class="font-medium text-slate-800">20 000 ₽</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                <span class="text-slate-600">Согласовано</span>
+              </div>
+              <span class="font-medium text-slate-800">30 000 ₽</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+                <span class="text-slate-600">Выплачено</span>
+              </div>
+              <span class="font-medium text-slate-800">50 000 ₽</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                <span class="text-slate-600">Закрыто</span>
+              </div>
+              <span class="font-medium text-slate-800">80 000 ₽</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- По разделам -->
+        <div class="card-static p-6">
+          <h2 class="font-semibold text-slate-800 mb-4">По разделам</h2>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-slate-600">АР — Архитектурные решения</span>
+              <span class="font-medium text-slate-800">130 000 ₽</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-slate-600">ГП — Генеральный план</span>
+              <span class="font-medium text-slate-800">50 000 ₽</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Требует внимания -->
+        <div class="card-static p-6 border-l-4 border-l-purple-500">
+          <h2 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Требует внимания
+          </h2>
+          <div class="space-y-2">
+            <div class="flex items-center gap-2 text-sm">
+              <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+              <span class="text-slate-700">1 выплата — нужны документы</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+              <span class="text-slate-700">1 ожидает выплаты</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Информация -->
+        <div class="card-static p-6 bg-slate-50 border-slate-200">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium text-slate-700 text-sm mb-1">Важно</p>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                После согласования счёт отправляется на выплату. Документы (акт, счёт-фактура) загружает бухгалтер.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Модальное окно: Выставить счёт -->
+  <div class="modal-overlay" id="addPayoutModal">
+    <div class="modal-content">
+      <div class="p-6 border-b border-slate-100">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold text-slate-800">💰 Выставить счёт</h2>
+          <button class="p-2 rounded-lg hover:bg-slate-100 transition-colors" onclick="document.getElementById('addPayoutModal').classList.remove('active')">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">Вид счёта *</label>
+          <div class="space-y-2">
+            <label class="radio-card flex items-center gap-3 cursor-pointer">
+              <input type="radio" name="payoutType" class="w-4 h-4 text-slate-800" checked>
+              <div>
+                <span class="font-medium">Счёт за работу</span>
+                <p class="text-xs text-slate-500">За выполненную работу по этапу</p>
+              </div>
+            </label>
+            <label class="radio-card flex items-center gap-3 cursor-pointer">
+              <input type="radio" name="payoutType" class="w-4 h-4 text-slate-800">
+              <div>
+                <span class="font-medium">Авансовый счёт</span>
+                <p class="text-xs text-slate-500">На материалы, расходы и т.д.</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Сумма *</label>
+            <div class="relative">
+              <input type="text" class="input-field pr-10" placeholder="0">
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">₽</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Дата *</label>
+            <input type="date" class="input-field">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">Раздел проекта</label>
+          <select class="input-field">
+            <option>Без раздела</option>
+            <option>АР — Архитектурные решения</option>
+            <option>ГП — Генеральный план</option>
+          </select>
+          <p class="text-xs text-slate-400 mt-1">Только разделы, в которых вы участвуете</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">Описание *</label>
+          <textarea class="input-field resize-none" rows="2" placeholder="Назначение счёта..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">📎 Счёт (файл)</label>
+          <div class="upload-zone">
+            <svg class="w-8 h-8 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <p class="text-sm text-slate-500">Перетащите файл или <span class="text-blue-600 font-medium">выберите</span></p>
+            <p class="text-xs text-slate-400 mt-1">PDF, JPG, PNG</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
+        <div class="flex gap-3">
+          <button class="btn-secondary flex-1" onclick="document.getElementById('addPayoutModal').classList.remove('active')">Отмена</button>
+          <button class="btn-primary flex-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            Отправить на согласование
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <script src="../js/api-client.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/ui-helpers.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/pages/project-finances-employee.js"></script>
+</body>
+</html>

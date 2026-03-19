@@ -1,0 +1,238 @@
+/**
+ * Mock Data - демо данные для работы без API
+ *
+ * Используется когда CONFIG.DEMO_MODE = true
+ */
+
+const MOCK_DATA = {
+  // Текущий пользователь
+  currentUser: {
+    id: 1,
+    name: 'Иванов Петр Сергеевич',
+    email: 'ivanov@company.ru',
+    role: 'director',
+  },
+
+  // Проекты
+  projects: [
+    {
+      id: 1,
+      code: '2025-001',
+      name: 'ЖК "Северное сияние"',
+      address: 'г. Москва, ул. Ленина, д. 45',
+      type: 'new-construction',
+      status: 'in-progress',
+      customer: 'ООО "СтройИнвест"',
+      startDate: '2025-01-15',
+      deadline: '2025-06-30',
+      area: 15000,
+      floors: 12,
+      description: 'Многоквартирный жилой комплекс с подземной парковкой',
+      progress: 33,
+      sections: [
+        { id: 1, code: 'АР', name: 'Архитектурные решения', status: 'done', responsible: 'Петров А.И.', color: '#3b82f6' },
+        { id: 2, code: 'ГП', name: 'Генеральный план', status: 'done', responsible: 'Сидоров К.М.', color: '#10b981' },
+        { id: 3, code: 'КР', name: 'Конструктивные решения', status: 'in-progress', responsible: 'Козлов Д.В.', color: '#f59e0b' },
+        { id: 4, code: 'ОВ', name: 'Отопление и вентиляция', status: 'not-started', responsible: null, color: '#8b5cf6' },
+        { id: 5, code: 'ВК', name: 'Водоснабжение и канализация', status: 'not-started', responsible: null, color: '#06b6d4' },
+        { id: 6, code: 'ЭОМ', name: 'Электроснабжение', status: 'not-started', responsible: null, color: '#eab308' },
+      ],
+      surveys: [
+        { id: 1, code: 'ИГД', name: 'Инженерно-геодезические', status: 'done', responsible: 'Иванов П.С.', progress: 100 },
+        { id: 2, code: 'ИГИ', name: 'Инженерно-геологические', status: 'in-progress', responsible: 'Петров А.И.', progress: 60 },
+        { id: 3, code: 'ИЭИ', name: 'Инженерно-экологические', status: 'not-started', responsible: null, progress: 0 },
+      ],
+      team: [
+        { id: 1, name: 'Петров А.И.', role: 'ГИП' },
+        { id: 2, name: 'Сидоров К.М.', role: 'Инженер' },
+        { id: 3, name: 'Козлов Д.В.', role: 'Конструктор' },
+      ],
+      files: [
+        { id: 1, name: 'ТЗ_на_проектирование.pdf', type: 'pdf', size: 2500000, uploadedBy: 'Иванов П.С.', uploadedAt: '2025-01-20' },
+        { id: 2, name: 'ГП_Стадия_П.dwg', type: 'dwg', size: 15000000, uploadedBy: 'Сидоров К.М.', uploadedAt: '2025-02-10' },
+      ],
+    },
+    {
+      id: 2,
+      code: '2025-002',
+      name: 'Реконструкция адм. здания',
+      address: 'г. Москва, ул. Мира, д. 12',
+      type: 'reconstruction',
+      status: 'in-progress',
+      customer: 'Администрация г. Москвы',
+      startDate: '2025-02-01',
+      deadline: '2025-04-15',
+      area: 3500,
+      floors: 4,
+      description: 'Реконструкция административного здания под современный офисный центр',
+      progress: 33,
+      sections: [
+        { id: 4, code: 'АР', name: 'Архитектурные решения', status: 'in-progress', responsible: 'Петров А.И.', color: '#3b82f6' },
+        { id: 5, code: 'ГП', name: 'Генеральный план', status: 'review', responsible: 'Сидоров К.М.', color: '#10b981' },
+        { id: 6, code: 'КР', name: 'Конструктивные решения', status: 'not-started', responsible: null, color: '#f59e0b' },
+      ],
+      surveys: [
+        { id: 4, code: 'ИГД', name: 'Инженерно-геодезические', status: 'done', responsible: 'Иванов П.С.', progress: 100 },
+        { id: 5, code: 'ИГИ', name: 'Инженерно-геологические', status: 'in-progress', responsible: 'Петров А.И.', progress: 45 },
+      ],
+      team: [
+        { id: 1, name: 'Петров А.И.', role: 'ГИП' },
+        { id: 2, name: 'Сидоров К.М.', role: 'Инженер' },
+      ],
+      files: [],
+    },
+    {
+      id: 3,
+      code: '2025-003',
+      name: 'Кап. ремонт школы №15',
+      address: 'г. Москва, ул. Школьная, д. 8',
+      type: 'renovation',
+      status: 'in-progress',
+      customer: 'Департамент образования',
+      startDate: '2024-10-01',
+      deadline: '2025-03-01',
+      area: 5200,
+      floors: 3,
+      description: 'Капитальный ремонт здания школы с модернизацией учебных помещений',
+      progress: 75,
+      sections: [
+        { id: 7, code: 'АР', name: 'Архитектурные решения', status: 'done', responsible: 'Петров А.И.', color: '#3b82f6' },
+        { id: 8, code: 'ГП', name: 'Генеральный план', status: 'done', responsible: 'Сидоров К.М.', color: '#10b981' },
+        { id: 9, code: 'КР', name: 'Конструктивные решения', status: 'done', responsible: 'Козлов Д.В.', color: '#f59e0b' },
+        { id: 10, code: 'ОВ', name: 'Отопление и вентиляция', status: 'in-progress', responsible: 'Васильев П.П.', color: '#8b5cf6' },
+      ],
+      surveys: [
+        { id: 6, code: 'ИГД', name: 'Инженерно-геодезические', status: 'done', responsible: 'Иванов П.С.', progress: 100 },
+      ],
+      team: [
+        { id: 1, name: 'Петров А.И.', role: 'ГИП' },
+        { id: 3, name: 'Козлов Д.В.', role: 'Конструктор' },
+        { id: 4, name: 'Васильев П.П.', role: 'Инженер ОВ' },
+      ],
+      files: [],
+    },
+  ],
+
+  // Задачи
+  tasks: [
+    { id: 1, title: 'Согласовать отступы с заказчиком', project: 'ЖК "Северное сияние"', priority: 'critical', status: 'in-progress', deadline: '2025-03-20', assignee: 'Петров А.И.' },
+    { id: 2, title: 'Проверить чертежи ГП', project: 'ЖК "Северное сияние"', priority: 'high', status: 'pending', deadline: '2025-03-18', assignee: 'Сидоров К.М.' },
+    { id: 3, title: 'Подготовить смету по КР', project: 'Реконструкция адм. здания', priority: 'medium', status: 'pending', deadline: '2025-03-25', assignee: 'Козлов Д.В.' },
+    { id: 4, title: 'Загрузить результаты ИГИ', project: 'ЖК "Северное сияние"', priority: 'low', status: 'completed', deadline: '2025-03-10', assignee: 'Петров А.И.' },
+  ],
+
+  // Сотрудники
+  employees: [
+    { id: 1, name: 'Иванов Петр Сергеевич', email: 'ivanov@company.ru', role: 'director', department: 'Руководство', phone: '+7 (495) 123-45-67', active: true },
+    { id: 2, name: 'Петров Алексей Иванович', email: 'petrov@company.ru', role: 'gip', department: 'Проектирование', phone: '+7 (495) 123-45-68', active: true },
+    { id: 3, name: 'Сидоров Константин Михайлович', email: 'sidorov@company.ru', role: 'engineer', department: 'Проектирование', phone: '+7 (495) 123-45-69', active: true },
+    { id: 4, name: 'Козлов Дмитрий Владимирович', email: 'kozlov@company.ru', role: 'engineer', department: 'Конструкторы', phone: '+7 (495) 123-45-70', active: true },
+    { id: 5, name: 'Васильев Павел Петрович', email: 'vasiliev@company.ru', role: 'engineer', department: 'Инженеры ОВ', phone: '+7 (495) 123-45-71', active: true },
+    { id: 6, name: 'Новикова Анна Сергеевна', email: 'novikova@company.ru', role: 'accountant', department: 'Бухгалтерия', phone: '+7 (495) 123-45-72', active: true },
+  ],
+
+  // Уведомления
+  notifications: [
+    { id: 1, type: 'expertise', title: 'Замечание требует ответа', description: '№127 по разделу АР', link: '06-4-section-expertise.html?id=127', read: false, createdAt: '2025-03-16T10:00:00Z' },
+    { id: 2, type: 'task', title: 'Дедлайн через 2 дня', description: 'ИГИ — Инженерно-геологические', link: '14-survey-detail.html?id=2', read: false, createdAt: '2025-03-16T07:00:00Z' },
+    { id: 3, type: 'task', title: 'Новая задача', description: 'Проверить чертежи ГП', link: '07-tasks-list.html', read: false, createdAt: '2025-03-15T12:00:00Z' },
+    { id: 4, type: 'file', title: 'Файл согласован', description: 'АР_Стадия П.pdf', link: '06-1-section-files.html', read: true, createdAt: '2025-03-14T09:00:00Z' },
+  ],
+
+  // Статистика дашборда
+  dashboardStats: {
+    projects: { total: 3, inProgress: 3, completed: 0 },
+    sections: { total: 13, done: 7, inProgress: 4, review: 1 },
+    tasks: { total: 4, overdue: 1, my: 2 },
+    finances: { month: 2500000, year: 15000000 },
+  },
+
+  // События требующие внимания
+  attentionItems: [
+    { id: 1, type: 'overdue-project', priority: 'critical', title: 'Просрочен дедлайн проекта', description: 'Кап. ремонт школы №15', badge: '📅 14 дней просрочки', link: '04-project-detail.html?id=3' },
+    { id: 2, type: 'pending-review', priority: 'critical', title: 'Замечания на проверке', description: '3 замечания ждут согласования', badge: 'ГИП не проверил', link: '06-4-section-expertise.html?id=1' },
+    { id: 3, type: 'overdue-payment', priority: 'warning', title: 'Просрочена оплата счёта', description: 'Реконструкция адм. здания', badge: '💰 50 000 ₽ не оплачено', link: '04-5-project-finances.html?id=2' },
+    { id: 4, type: 'deadline-soon', priority: 'warning', title: 'Дедлайн изыскания скоро', description: 'ИГИ — Инженерно-геологические', badge: '📅 через 2 дня', link: '14-survey-detail.html?id=2' },
+    { id: 5, type: 'deadline-soon', priority: 'warning', title: 'Дедлайн раздела скоро', description: 'АР — Архитектурные решения', badge: '📅 через 5 дней', link: '06-section-detail.html?id=2' },
+    { id: 6, type: 'missing-documents', priority: 'info', title: 'Не загружены документы', description: '5 выплат без закрывающих документов', badge: '📋 Требуют внимания', link: '04-5-project-finances.html?id=1' },
+  ],
+
+  // Справочники
+  dictionaries: {
+    sectionTypes: [
+      { code: 'АР', name: 'Архитектурные решения', color: '#3b82f6' },
+      { code: 'ГП', name: 'Генеральный план', color: '#10b981' },
+      { code: 'КР', name: 'Конструктивные решения', color: '#f59e0b' },
+      { code: 'ОВ', name: 'Отопление и вентиляция', color: '#8b5cf6' },
+      { code: 'ВК', name: 'Водоснабжение и канализация', color: '#06b6d4' },
+      { code: 'ЭОМ', name: 'Электроснабжение', color: '#eab308' },
+      { code: 'ГС', name: 'Газоснабжение', color: '#f97316' },
+      { code: 'ТХ', name: 'Технологические решения', color: '#ec4899' },
+      { code: 'ПОС', name: 'Проект организации строительства', color: '#14b8a6' },
+      { code: 'ПОД', name: 'Проект организации демонтажа', color: '#6366f1' },
+    ],
+    surveyTypes: [
+      { code: 'ИГД', name: 'Инженерно-геодезические изыскания' },
+      { code: 'ИГИ', name: 'Инженерно-геологические изыскания' },
+      { code: 'ИЭИ', name: 'Инженерно-экологические изыскания' },
+      { code: 'ИМИ', name: 'Инженерно-метеорологические изыскания' },
+    ],
+    projectStatuses: [
+      { value: 'not-started', label: 'Не начат' },
+      { value: 'in-progress', label: 'В работе' },
+      { value: 'review', label: 'На согласовании' },
+      { value: 'completed', label: 'Завершён' },
+    ],
+    priorities: [
+      { value: 'critical', label: 'Критичный' },
+      { value: 'high', label: 'Высокий' },
+      { value: 'medium', label: 'Средний' },
+      { value: 'low', label: 'Низкий' },
+    ],
+  },
+};
+
+/**
+ * Получить моковые данные по endpoint
+ */
+MOCK_DATA.getMockResponse = function(endpoint) {
+  // Dashboard
+  if (endpoint === '/dashboard/stats') return this.dashboardStats;
+  if (endpoint === '/dashboard/attention') return this.attentionItems;
+  if (endpoint === '/dashboard/recent-projects') return this.projects.slice(0, 3);
+  if (endpoint === '/dashboard/my-tasks') return this.tasks.filter(t => t.status !== 'completed');
+
+  // Projects
+  if (endpoint === '/projects') return { items: this.projects, total: this.projects.length };
+  if (endpoint.match(/^\/projects\/\d+$/)) {
+    const id = parseInt(endpoint.split('/')[2]);
+    return this.projects.find(p => p.id === id) || null;
+  }
+
+  // Tasks
+  if (endpoint === '/tasks') return { items: this.tasks, total: this.tasks.length };
+
+  // Employees
+  if (endpoint === '/employees') return { items: this.employees, total: this.employees.length };
+  if (endpoint.match(/^\/employees\/\d+$/)) {
+    const id = parseInt(endpoint.split('/')[2]);
+    return this.employees.find(e => e.id === id) || null;
+  }
+
+  // Notifications
+  if (endpoint === '/notifications') return { items: this.notifications, total: this.notifications.length };
+  if (endpoint === '/notifications/unread-count') return { count: this.notifications.filter(n => !n.read).length };
+
+  // Dictionaries
+  if (endpoint === '/dictionaries/section-types') return this.dictionaries.sectionTypes;
+  if (endpoint === '/dictionaries/survey-types') return this.dictionaries.surveyTypes;
+  if (endpoint === '/dictionaries/project-statuses') return this.dictionaries.projectStatuses;
+  if (endpoint === '/dictionaries/task-priorities') return this.dictionaries.priorities;
+
+  // Auth
+  if (endpoint === '/user/profile') return this.currentUser;
+
+  // Default
+  console.warn(`Mock data not found for: ${endpoint}`);
+  return null;
+};

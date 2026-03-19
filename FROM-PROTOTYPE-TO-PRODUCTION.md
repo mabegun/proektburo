@@ -4,6 +4,36 @@
 
 ---
 
+## ✅ Что уже сделано
+
+### Backend (FastAPI)
+| Компонент | Статус |
+|-----------|--------|
+| API сервер | ✅ 50+ endpoints |
+| SQLite БД | ✅ 13 таблиц |
+| Авторизация | ✅ По email |
+| Тестовые данные | ✅ |
+| CORS | ✅ |
+
+### Frontend (Vanilla JS)
+| Компонент | Статус |
+|-----------|--------|
+| Прототип | ✅ 41 HTML страница |
+| API скрипты | ✅ api.js, api-client.js |
+| UI helpers | ✅ ui-helpers.js, shared.js |
+| API интеграция | 🔄 1 страница готова |
+
+### Запуск
+```bash
+cd app
+./run.sh        # Linux/macOS
+run.bat         # Windows
+```
+
+http://localhost:8000
+
+---
+
 ## 1. Этапы разработки
 
 ```
