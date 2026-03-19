@@ -38,10 +38,10 @@
   <aside class="w-72 bg-white border-r border-slate-200 min-h-screen flex flex-col">
     <div class="p-5">
       <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
-        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
+        <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white" id="user-avatar">И</div>
         <div class="flex-1 min-w-0">
-          <p class="font-semibold text-slate-800 truncate">Иванов П.С.</p>
-          <p class="text-xs text-slate-500">Директор</p>
+          <p class="font-semibold text-slate-800 truncate" id="user-name">Иванов П.С.</p>
+          <p class="text-xs text-slate-500" id="user-role">Директор</p>
         </div>
       </div>
     </div>
@@ -107,19 +107,19 @@
     <div class="grid grid-cols-4 gap-6 mb-8">
       <div class="stat-card">
         <p class="text-sm text-slate-500 mb-1">Всего проектов</p>
-        <p class="text-3xl font-bold text-slate-800">3</p>
+        <p class="text-3xl font-bold text-slate-800" id="stat-total-projects">-</p>
       </div>
       <div class="stat-card">
         <p class="text-sm text-slate-500 mb-1">В работе</p>
-        <p class="text-3xl font-bold text-blue-600">3</p>
+        <p class="text-3xl font-bold text-blue-600" id="stat-in-progress">-</p>
       </div>
       <div class="stat-card">
         <p class="text-sm text-slate-500 mb-1">На согласовании</p>
-        <p class="text-3xl font-bold text-amber-600">1</p>
+        <p class="text-3xl font-bold text-amber-600" id="stat-review">-</p>
       </div>
       <div class="stat-card">
         <p class="text-sm text-slate-500 mb-1">Просрочено</p>
-        <p class="text-3xl font-bold text-red-600">0</p>
+        <p class="text-3xl font-bold text-red-600" id="stat-overdue">-</p>
       </div>
     </div>
 
@@ -128,123 +128,18 @@
       <!-- Статистика по разделам -->
       <div class="card-static p-6">
         <h2 class="font-semibold text-slate-800 mb-4">Выполнение разделов</h2>
-        <div class="space-y-4">
-          <div>
-            <div class="flex justify-between text-sm mb-1">
-              <span class="text-slate-600">АР - Архитектурные решения</span>
-              <span class="font-medium text-slate-700">100%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-bar-fill" style="width: 100%"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm mb-1">
-              <span class="text-slate-600">ГП - Генеральный план</span>
-              <span class="font-medium text-slate-700">100%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-bar-fill" style="width: 100%"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm mb-1">
-              <span class="text-slate-600">КР - Конструктивные решения</span>
-              <span class="font-medium text-slate-700">45%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-bar-fill" style="width: 45%"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm mb-1">
-              <span class="text-slate-600">ОВ - Отопление и вентиляция</span>
-              <span class="font-medium text-slate-700">0%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-bar-fill" style="width: 0%"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm mb-1">
-              <span class="text-slate-600">ВК - Водоснабжение</span>
-              <span class="font-medium text-slate-700">0%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-bar-fill" style="width: 0%"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm mb-1">
-              <span class="text-slate-600">ЭОМ - Электроснабжение</span>
-              <span class="font-medium text-slate-700">0%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-bar-fill" style="width: 0%"></div>
-            </div>
-          </div>
+        <div class="space-y-4" id="sections-progress">
+          <!-- Загружается из API -->
+          <p class="text-sm text-slate-400">Загрузка...</p>
         </div>
       </div>
 
       <!-- Статистика по исполнителям -->
       <div class="card-static p-6">
         <h2 class="font-semibold text-slate-800 mb-4">Загрузка исполнителей</h2>
-        <div class="space-y-4">
-          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50">
-            <div class="flex items-center gap-3">
-              <div class="avatar bg-gradient-to-br from-slate-700 to-slate-500 text-white">И</div>
-              <div>
-                <p class="font-medium text-slate-800">Иванов П.С.</p>
-                <p class="text-xs text-slate-500">ГИП</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <p class="font-semibold text-slate-800">3 проекта</p>
-              <p class="text-xs text-slate-500">2 задачи</p>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50">
-            <div class="flex items-center gap-3">
-              <div class="avatar bg-gradient-to-br from-blue-500 to-blue-400 text-white">П</div>
-              <div>
-                <p class="font-medium text-slate-800">Петров А.И.</p>
-                <p class="text-xs text-slate-500">Архитектор</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <p class="font-semibold text-slate-800">2 проекта</p>
-              <p class="text-xs text-slate-500">1 задача</p>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50">
-            <div class="flex items-center gap-3">
-              <div class="avatar bg-gradient-to-br from-green-500 to-green-400 text-white">С</div>
-              <div>
-                <p class="font-medium text-slate-800">Сидоров К.М.</p>
-                <p class="text-xs text-slate-500">Инженер ГП</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <p class="font-semibold text-slate-800">2 проекта</p>
-              <p class="text-xs text-slate-500">0 задач</p>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50">
-            <div class="flex items-center gap-3">
-              <div class="avatar bg-gradient-to-br from-purple-500 to-purple-400 text-white">К</div>
-              <div>
-                <p class="font-medium text-slate-800">Козлов Д.В.</p>
-                <p class="text-xs text-slate-500">Конструктор</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <p class="font-semibold text-slate-800">1 проект</p>
-              <p class="text-xs text-slate-500">1 задача</p>
-            </div>
-          </div>
+        <div class="space-y-3" id="employees-stats">
+          <!-- Загружается из API -->
+          <p class="text-sm text-slate-400">Загрузка...</p>
         </div>
       </div>
     </div>
@@ -253,15 +148,15 @@
     <div class="card-static p-6">
       <h2 class="font-semibold text-slate-800 mb-4">Экспорт данных</h2>
       <div class="grid grid-cols-3 gap-4">
-        <button class="btn-secondary flex items-center justify-center gap-2 py-4">
+        <button id="export-excel-btn" class="btn-secondary flex items-center justify-center gap-2 py-4">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
           Экспорт в Excel
         </button>
-        <button class="btn-secondary flex items-center justify-center gap-2 py-4">
+        <button id="report-projects-btn" class="btn-secondary flex items-center justify-center gap-2 py-4">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
           Отчёт по проектам
         </button>
-        <button class="btn-secondary flex items-center justify-center gap-2 py-4">
+        <button id="report-employees-btn" class="btn-secondary flex items-center justify-center gap-2 py-4">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
           Отчёт по исполнителям
         </button>
